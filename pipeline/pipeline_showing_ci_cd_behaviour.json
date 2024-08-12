@@ -1,0 +1,18 @@
+{
+	"name": "pipeline_showing_ci_cd_behaviour",
+	"properties": {
+		"activities": [
+			{
+				"name": "Wait1",
+				"description": "Added to feature 1",
+				"type": "Wait",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 1
+				}
+			}
+		],
+		"annotations": []
+	}
+}
