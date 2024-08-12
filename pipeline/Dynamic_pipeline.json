@@ -1,0 +1,161 @@
+{
+	"name": "Dynamic_pipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get a list of table to be prcessed",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "select quotename(t.name) as tableName,quotename(schema_name(t.schema_id)) as schemaName\nfrom sys.tables as t",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "Generic_azure_dataset",
+						"type": "DatasetReference",
+						"parameters": {
+							"ServerName": {
+								"value": "@pipeline().parameters.ServerName",
+								"type": "Expression"
+							},
+							"DabaseName": {
+								"value": "@pipeline().parameters.DabaseName",
+								"type": "Expression"
+							}
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "iterate all tables",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Get a list of table to be prcessed",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get a list of table to be prcessed').output.value",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "copy data from table",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": {
+										"value": "@concat('select * from ',item().schemaName, '.',item().tableName)",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "DelimitedTextSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".txt"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "Generic_azure_dataset",
+									"type": "DatasetReference",
+									"parameters": {
+										"ServerName": {
+											"value": "@pipeline().parameters.ServerName",
+											"type": "Expression"
+										},
+										"DabaseName": {
+											"value": "@pipeline().parameters.DabaseName",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "Generic_ADLSg2CSV_DS",
+									"type": "DatasetReference",
+									"parameters": {
+										"ServerName": {
+											"value": "@pipeline().parameters.ServerName",
+											"type": "Expression"
+										},
+										"DabaseName": {
+											"value": "@pipeline().parameters.DabaseName",
+											"type": "Expression"
+										},
+										"SchemaName": {
+											"value": "@item().schemaName",
+											"type": "Expression"
+										},
+										"TableName": {
+											"value": "@item().tableName",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"ServerName": {
+				"type": "string",
+				"defaultValue": "dp203databaseservertraining.database.windows.net"
+			},
+			"DabaseName": {
+				"type": "string",
+				"defaultValue": "DP203SQLdatabase"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-07-31T15:03:47Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

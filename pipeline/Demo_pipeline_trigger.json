@@ -1,0 +1,27 @@
+{
+	"name": "Demo_pipeline_trigger",
+	"properties": {
+		"activities": [
+			{
+				"name": "Wait1",
+				"type": "Wait",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 1
+				}
+			}
+		],
+		"parameters": {
+			"windowStart": {
+				"type": "string"
+			},
+			"windowEnd": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-08-07T10:03:10Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

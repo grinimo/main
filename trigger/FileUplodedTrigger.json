@@ -1,0 +1,28 @@
+{
+	"name": "FileUplodedTrigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "Demon_pipeline_Storage_event",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"FileName": "@triggerBody().fileName"
+				}
+			}
+		],
+		"type": "BlobEventsTrigger",
+		"typeProperties": {
+			"blobPathBeginsWith": "/raw/blobs/",
+			"blobPathEndsWith": ".csv",
+			"ignoreEmptyBlobs": true,
+			"scope": "/subscriptions/f00081c2-4f6c-4b2b-927b-02b4f7ddd4a0/resourceGroups/POC-Databricks-E2E/providers/Microsoft.Storage/storageAccounts/dp203storageaccountt",
+			"events": [
+				"Microsoft.Storage.BlobCreated"
+			]
+		}
+	}
+}

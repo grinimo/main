@@ -1,0 +1,9 @@
+{
+	"name": "DP203datafactorymgr",
+	"location": "francecentral",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "bc6c7830-bc2c-47fe-af95-168f0a89d065",
+		"tenantId": "dcfb7214-58d7-4d21-be2b-41cc44d3742a"
+	}
+}

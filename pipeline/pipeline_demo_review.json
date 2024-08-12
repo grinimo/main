@@ -1,0 +1,29 @@
+{
+	"name": "pipeline_demo_review",
+	"properties": {
+		"activities": [
+			{
+				"name": "Wait1",
+				"type": "Wait",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 1
+				}
+			}
+		],
+		"parameters": {
+			"WindowsStart": {
+				"type": "string",
+				"defaultValue": "@trigger().outputs.windowStartTime"
+			},
+			"WindowsEnd": {
+				"type": "string",
+				"defaultValue": "@trigger().outputs.windowEndTime"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-08-09T13:02:16Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

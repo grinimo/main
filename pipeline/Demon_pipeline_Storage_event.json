@@ -1,0 +1,24 @@
+{
+	"name": "Demon_pipeline_Storage_event",
+	"properties": {
+		"activities": [
+			{
+				"name": "Wait1",
+				"type": "Wait",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 1
+				}
+			}
+		],
+		"parameters": {
+			"FileName": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-08-07T10:36:49Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
