@@ -35,6 +35,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'GenericAzureSqlDB_LS'"
 		},
+		"TestParquet_linked service_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'TestParquet_linked service'"
+		},
 		"AdvantureWork_LS_properties_typeProperties_server": {
 			"type": "string",
 			"defaultValue": "dp203databaseservertraining.database.windows.net"
@@ -98,6 +102,10 @@
 		"Liked_Service_SAS_sasUri": {
 			"type": "secureString",
 			"metadata": "Secure string for 'sasUri' of 'Liked_Service_SAS'"
+		},
+		"TestParquet_linked service_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://dp203storageaccountt.dfs.core.windows.net/"
 		},
 		"FileUplodedTrigger_properties_Demon_pipeline_Storage_event_parameters_FileName": {
 			"type": "string",
@@ -164,8 +172,7 @@
 							"sink": {
 								"type": "ParquetSink",
 								"storeSettings": {
-									"type": "AzureBlobFSWriteSettings",
-									"copyBehavior": "PreserveHierarchy"
+									"type": "AzureBlobFSWriteSettings"
 								},
 								"formatSettings": {
 									"type": "ParquetWriteSettings"
@@ -199,14 +206,9 @@
 					{
 						"name": "Copy parquet to Pool Activity",
 						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Transfer csv to parquet",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
+						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
 							"retry": 0,
@@ -258,6 +260,203 @@
 								"parameters": {}
 							}
 						]
+					},
+					{
+						"name": "Copy parquet to dedicated pool",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Transfer csv to parquet",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ParquetSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"wildcardFolderPath": "parquet",
+									"wildcardFileName": "*.parquet",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "ParquetReadSettings"
+								}
+							},
+							"sink": {
+								"type": "SqlDWSink",
+								"writeBehavior": "Insert",
+								"sqlWriterUseTableLock": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "Correlationid",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "Correlationid",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Operationname",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "Operationname",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Status",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "Status",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Eventcategory",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "Eventcategory",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Level",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "Level",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Time",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "Time",
+											"type": "DateTime",
+											"physicalType": "datetime"
+										}
+									},
+									{
+										"source": {
+											"name": "Subscription",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "Subscription",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Eventinitiatedby",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "Eventinitiatedby",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Resourcetype",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "Resourcetype",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Resourcegroup",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "Resourcegroup",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Resource",
+											"type": "String",
+											"physicalType": "UTF8"
+										},
+										"sink": {
+											"name": "Resource",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "TestParquet_dataset",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "TestParquet_AzureSynapseAnalytics",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
 					}
 				],
 				"policy": {
@@ -269,7 +468,9 @@
 				"[concat(variables('factoryId'), '/datasets/Transfer_csv_to_parquet')]",
 				"[concat(variables('factoryId'), '/datasets/Transfer_To_file_parquet')]",
 				"[concat(variables('factoryId'), '/datasets/Parquet_to_dedicated_Pool')]",
-				"[concat(variables('factoryId'), '/datasets/copy_parquet_to_dedicated_SQL_Pool')]"
+				"[concat(variables('factoryId'), '/datasets/copy_parquet_to_dedicated_SQL_Pool')]",
+				"[concat(variables('factoryId'), '/datasets/TestParquet_dataset')]",
+				"[concat(variables('factoryId'), '/datasets/TestParquet_AzureSynapseAnalytics')]"
 			]
 		},
 		{
@@ -1135,6 +1336,97 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/TestParquet_AzureSynapseAnalytics')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DedicatedSql Pool copy csv from adf",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlDWTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "PoolActivityLog"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/DedicatedSql Pool copy csv from adf')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TestParquet_dataset')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "TestParquet_linked service",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "parquet",
+						"fileSystem": "data"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "Correlationid",
+						"type": "UTF8"
+					},
+					{
+						"name": "Operationname",
+						"type": "UTF8"
+					},
+					{
+						"name": "Status",
+						"type": "UTF8"
+					},
+					{
+						"name": "Eventcategory",
+						"type": "UTF8"
+					},
+					{
+						"name": "Level",
+						"type": "UTF8"
+					},
+					{
+						"name": "Time",
+						"type": "UTF8"
+					},
+					{
+						"name": "Subscription",
+						"type": "UTF8"
+					},
+					{
+						"name": "Eventinitiatedby",
+						"type": "UTF8"
+					},
+					{
+						"name": "Resourcetype",
+						"type": "UTF8"
+					},
+					{
+						"name": "Resourcegroup",
+						"type": "UTF8"
+					},
+					{
+						"name": "Resource",
+						"type": "UTF8"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/TestParquet_linked service')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Transfer_To_file_parquet')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1473,6 +1765,23 @@
 				"type": "AzureBlobFS",
 				"typeProperties": {
 					"sasUri": "[parameters('Liked_Service_SAS_sasUri')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TestParquet_linked service')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('TestParquet_linked service_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('TestParquet_linked service_accountKey')]"
+					}
 				}
 			},
 			"dependsOn": []

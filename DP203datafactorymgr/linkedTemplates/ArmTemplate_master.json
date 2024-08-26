@@ -35,6 +35,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'GenericAzureSqlDB_LS'"
 		},
+		"TestParquet_linked service_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'TestParquet_linked service'"
+		},
 		"AdvantureWork_LS_properties_typeProperties_server": {
 			"type": "string",
 			"defaultValue": "dp203databaseservertraining.database.windows.net"
@@ -98,6 +102,10 @@
 		"Liked_Service_SAS_sasUri": {
 			"type": "secureString",
 			"metadata": "Secure string for 'sasUri' of 'Liked_Service_SAS'"
+		},
+		"TestParquet_linked service_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://dp203storageaccountt.dfs.core.windows.net/"
 		},
 		"FileUplodedTrigger_properties_Demon_pipeline_Storage_event_parameters_FileName": {
 			"type": "string",
@@ -171,6 +179,9 @@
 					"GenericAzureSqlDB_LS_password": {
 						"value": "[parameters('GenericAzureSqlDB_LS_password')]"
 					},
+					"TestParquet_linked service_accountKey": {
+						"value": "[parameters('TestParquet_linked service_accountKey')]"
+					},
 					"AdvantureWork_LS_properties_typeProperties_server": {
 						"value": "[parameters('AdvantureWork_LS_properties_typeProperties_server')]"
 					},
@@ -218,6 +229,9 @@
 					},
 					"Liked_Service_SAS_sasUri": {
 						"value": "[parameters('Liked_Service_SAS_sasUri')]"
+					},
+					"TestParquet_linked service_properties_typeProperties_url": {
+						"value": "[parameters('TestParquet_linked service_properties_typeProperties_url')]"
 					}
 				}
 			},

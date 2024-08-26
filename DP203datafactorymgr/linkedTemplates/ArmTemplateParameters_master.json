@@ -26,6 +26,9 @@
 		"GenericAzureSqlDB_LS_password": {
 			"value": ""
 		},
+		"TestParquet_linked service_accountKey": {
+			"value": ""
+		},
 		"AdvantureWork_LS_properties_typeProperties_server": {
 			"value": "dp203databaseservertraining.database.windows.net"
 		},
@@ -73,6 +76,9 @@
 		},
 		"Liked_Service_SAS_sasUri": {
 			"value": ""
+		},
+		"TestParquet_linked service_properties_typeProperties_url": {
+			"value": "https://dp203storageaccountt.dfs.core.windows.net/"
 		},
 		"FileUplodedTrigger_properties_Demon_pipeline_Storage_event_parameters_FileName": {
 			"value": "@triggerBody().fileName"

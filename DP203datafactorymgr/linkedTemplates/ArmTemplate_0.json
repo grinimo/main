@@ -35,6 +35,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'GenericAzureSqlDB_LS'"
 		},
+		"TestParquet_linked service_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'TestParquet_linked service'"
+		},
 		"AdvantureWork_LS_properties_typeProperties_server": {
 			"type": "string",
 			"defaultValue": "dp203databaseservertraining.database.windows.net"
@@ -98,6 +102,10 @@
 		"Liked_Service_SAS_sasUri": {
 			"type": "secureString",
 			"metadata": "Secure string for 'sasUri' of 'Liked_Service_SAS'"
+		},
+		"TestParquet_linked service_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://dp203storageaccountt.dfs.core.windows.net/"
 		}
 	},
 	"variables": {
@@ -531,6 +539,23 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/TestParquet_linked service')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('TestParquet_linked service_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('TestParquet_linked service_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/default')]",
 			"type": "Microsoft.DataFactory/factories/managedVirtualNetworks",
 			"apiVersion": "2018-06-01",
@@ -724,55 +749,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/Copy_file_CSV_Dedicated_PoolActivityLog_synapse')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Generic_ADLSg2CSV_DS')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage_LS",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"ServerName": {
-						"type": "string"
-					},
-					"DabaseName": {
-						"type": "string"
-					},
-					"SchemaName": {
-						"type": "string"
-					},
-					"TableName": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": {
-							"value": "@concat(dataset().SchemaName, '_',dataset().tableName, '.csv')",
-							"type": "Expression"
-						},
-						"folderPath": {
-							"value": "@concat(\n    dataset().ServerName,\n    '/',\n    dataset().DabaseName,\n    '/',\n    dataset().TableName,\n    '/Year=',\n    formatDateTime(utcnow(),'yyyy'),\n    '/Month=',\n    formatDateTime(utcnow(),'MM'),\n    '/Day=',\n    formatDateTime(utcnow(),'dd')\n)\n\n\n",
-							"type": "Expression"
-						},
-						"fileSystem": "raw"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage_LS')]"
 			]
 		}
 	]
