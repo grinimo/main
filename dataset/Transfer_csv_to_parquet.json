@@ -10,8 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "ActivityLog01.csv",
-				"folderPath": "csv",
+				"folderPath": "parquet",
 				"fileSystem": "data"
 			},
 			"columnDelimiter": ",",
