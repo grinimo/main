@@ -727,71 +727,52 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/DestinationDataset_u5y')]",
+			"name": "[concat(parameters('factoryName'), '/Generic_ADLSg2CSV_DS')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "DedicatedSql Pool copy csv from adf",
+					"referenceName": "AzureDataLakeStorage_LS",
 					"type": "LinkedServiceReference"
 				},
-				"annotations": [],
-				"type": "AzureSqlDWTable",
-				"schema": [
-					{
-						"name": "Correlationid",
-						"type": "varchar"
+				"parameters": {
+					"ServerName": {
+						"type": "string"
 					},
-					{
-						"name": "Operationname",
-						"type": "varchar"
+					"DabaseName": {
+						"type": "string"
 					},
-					{
-						"name": "Status",
-						"type": "varchar"
+					"SchemaName": {
+						"type": "string"
 					},
-					{
-						"name": "Eventcategory",
-						"type": "varchar"
-					},
-					{
-						"name": "Level",
-						"type": "varchar"
-					},
-					{
-						"name": "Time",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "Subscription",
-						"type": "varchar"
-					},
-					{
-						"name": "Eventinitiatedby",
-						"type": "varchar"
-					},
-					{
-						"name": "Resourcetype",
-						"type": "varchar"
-					},
-					{
-						"name": "Resourcegroup",
-						"type": "varchar"
-					},
-					{
-						"name": "Resource",
-						"type": "varchar"
+					"TableName": {
+						"type": "string"
 					}
-				],
+				},
+				"annotations": [],
+				"type": "DelimitedText",
 				"typeProperties": {
-					"schema": "dbo",
-					"table": "PoolActivityLog"
-				}
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@concat(dataset().SchemaName, '_',dataset().tableName, '.csv')",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@concat(\n    dataset().ServerName,\n    '/',\n    dataset().DabaseName,\n    '/',\n    dataset().TableName,\n    '/Year=',\n    formatDateTime(utcnow(),'yyyy'),\n    '/Month=',\n    formatDateTime(utcnow(),'MM'),\n    '/Day=',\n    formatDateTime(utcnow(),'dd')\n)\n\n\n",
+							"type": "Expression"
+						},
+						"fileSystem": "raw"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/DedicatedSql Pool copy csv from adf')]"
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage_LS')]"
 			]
 		}
 	]
