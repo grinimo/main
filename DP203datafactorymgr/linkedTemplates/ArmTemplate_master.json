@@ -1,0 +1,265 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "DP203datafactorymgr"
+		},
+		"AdvantureWork_LS_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'AdvantureWork_LS'"
+		},
+		"AzureDataLakeStorage_LS_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage_LS'"
+		},
+		"Copy_file_CSV_Dedicated_PoolActivityLog_synapse_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'Copy_file_CSV_Dedicated_PoolActivityLog_synapse'"
+		},
+		"DedicatedSql Pool copy csv from adf_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'DedicatedSql Pool copy csv from adf'"
+		},
+		"DynamicAzureDataLakeStorage_training_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'DynamicAzureDataLakeStorage_training'"
+		},
+		"GenericAzureSQLdb_training_LS_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'GenericAzureSQLdb_training_LS'"
+		},
+		"GenericAzureSqlDB_LS_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'GenericAzureSqlDB_LS'"
+		},
+		"AdvantureWork_LS_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "dp203databaseservertraining.database.windows.net"
+		},
+		"AdvantureWork_LS_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "DP203SQLdatabase"
+		},
+		"AdvantureWork_LS_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "adminsql"
+		},
+		"AzureDataLakeStorage_LS_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://dp203storageaccountt.dfs.core.windows.net/"
+		},
+		"Copy_file_CSV_Dedicated_PoolActivityLog_synapse_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://dp203storageaccountt.dfs.core.windows.net/"
+		},
+		"DedicatedSql Pool copy csv from adf_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "dp203training001.sql.azuresynapse.net"
+		},
+		"DedicatedSql Pool copy csv from adf_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "dp203DedicatedPool"
+		},
+		"DedicatedSql Pool copy csv from adf_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "sqladminuser"
+		},
+		"DynamicAzureDataLakeStorage_training_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://dp203accountblobtraining.dfs.core.windows.net/"
+		},
+		"GenericAzureSQLdb_training_LS_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "@{linkedService().ServerNameTraining}"
+		},
+		"GenericAzureSQLdb_training_LS_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "@{linkedService().DatabaseNameTraining}"
+		},
+		"GenericAzureSQLdb_training_LS_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "adminsql"
+		},
+		"GenericAzureSqlDB_LS_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "@{linkedService().ServerName}"
+		},
+		"GenericAzureSqlDB_LS_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "@{linkedService().DabaseName}"
+		},
+		"GenericAzureSqlDB_LS_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "adminsql"
+		},
+		"Liked_Service_SAS_sasUri": {
+			"type": "secureString",
+			"metadata": "Secure string for 'sasUri' of 'Liked_Service_SAS'"
+		},
+		"FileUplodedTrigger_properties_Demon_pipeline_Storage_event_parameters_FileName": {
+			"type": "string",
+			"defaultValue": "@triggerBody().fileName"
+		},
+		"FileUplodedTrigger_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/f00081c2-4f6c-4b2b-927b-02b4f7ddd4a0/resourceGroups/POC-Databricks-E2E/providers/Microsoft.Storage/storageAccounts/dp203storageaccountt"
+		},
+		"TumblingWindowsTrigger_properties_pipeline_parameters_windowStart": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.windowStartTime"
+		},
+		"TumblingWindowsTrigger_properties_pipeline_parameters_windowEnd": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.windowEndTime"
+		},
+		"trigger1TumblingWindows_properties_pipeline_parameters_WindowsStart": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.windowStartTime\n"
+		},
+		"trigger1TumblingWindows_properties_pipeline_parameters_WindowsEnd": {
+			"type": "string",
+			"defaultValue": "@trigger().outputs.windowEndTime\n"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "DP203datafactorymgr_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"AdvantureWork_LS_password": {
+						"value": "[parameters('AdvantureWork_LS_password')]"
+					},
+					"AzureDataLakeStorage_LS_accountKey": {
+						"value": "[parameters('AzureDataLakeStorage_LS_accountKey')]"
+					},
+					"Copy_file_CSV_Dedicated_PoolActivityLog_synapse_accountKey": {
+						"value": "[parameters('Copy_file_CSV_Dedicated_PoolActivityLog_synapse_accountKey')]"
+					},
+					"DedicatedSql Pool copy csv from adf_password": {
+						"value": "[parameters('DedicatedSql Pool copy csv from adf_password')]"
+					},
+					"DynamicAzureDataLakeStorage_training_accountKey": {
+						"value": "[parameters('DynamicAzureDataLakeStorage_training_accountKey')]"
+					},
+					"GenericAzureSQLdb_training_LS_password": {
+						"value": "[parameters('GenericAzureSQLdb_training_LS_password')]"
+					},
+					"GenericAzureSqlDB_LS_password": {
+						"value": "[parameters('GenericAzureSqlDB_LS_password')]"
+					},
+					"AdvantureWork_LS_properties_typeProperties_server": {
+						"value": "[parameters('AdvantureWork_LS_properties_typeProperties_server')]"
+					},
+					"AdvantureWork_LS_properties_typeProperties_database": {
+						"value": "[parameters('AdvantureWork_LS_properties_typeProperties_database')]"
+					},
+					"AdvantureWork_LS_properties_typeProperties_userName": {
+						"value": "[parameters('AdvantureWork_LS_properties_typeProperties_userName')]"
+					},
+					"AzureDataLakeStorage_LS_properties_typeProperties_url": {
+						"value": "[parameters('AzureDataLakeStorage_LS_properties_typeProperties_url')]"
+					},
+					"Copy_file_CSV_Dedicated_PoolActivityLog_synapse_properties_typeProperties_url": {
+						"value": "[parameters('Copy_file_CSV_Dedicated_PoolActivityLog_synapse_properties_typeProperties_url')]"
+					},
+					"DedicatedSql Pool copy csv from adf_properties_typeProperties_server": {
+						"value": "[parameters('DedicatedSql Pool copy csv from adf_properties_typeProperties_server')]"
+					},
+					"DedicatedSql Pool copy csv from adf_properties_typeProperties_database": {
+						"value": "[parameters('DedicatedSql Pool copy csv from adf_properties_typeProperties_database')]"
+					},
+					"DedicatedSql Pool copy csv from adf_properties_typeProperties_userName": {
+						"value": "[parameters('DedicatedSql Pool copy csv from adf_properties_typeProperties_userName')]"
+					},
+					"DynamicAzureDataLakeStorage_training_properties_typeProperties_url": {
+						"value": "[parameters('DynamicAzureDataLakeStorage_training_properties_typeProperties_url')]"
+					},
+					"GenericAzureSQLdb_training_LS_properties_typeProperties_server": {
+						"value": "[parameters('GenericAzureSQLdb_training_LS_properties_typeProperties_server')]"
+					},
+					"GenericAzureSQLdb_training_LS_properties_typeProperties_database": {
+						"value": "[parameters('GenericAzureSQLdb_training_LS_properties_typeProperties_database')]"
+					},
+					"GenericAzureSQLdb_training_LS_properties_typeProperties_userName": {
+						"value": "[parameters('GenericAzureSQLdb_training_LS_properties_typeProperties_userName')]"
+					},
+					"GenericAzureSqlDB_LS_properties_typeProperties_server": {
+						"value": "[parameters('GenericAzureSqlDB_LS_properties_typeProperties_server')]"
+					},
+					"GenericAzureSqlDB_LS_properties_typeProperties_database": {
+						"value": "[parameters('GenericAzureSqlDB_LS_properties_typeProperties_database')]"
+					},
+					"GenericAzureSqlDB_LS_properties_typeProperties_userName": {
+						"value": "[parameters('GenericAzureSqlDB_LS_properties_typeProperties_userName')]"
+					},
+					"Liked_Service_SAS_sasUri": {
+						"value": "[parameters('Liked_Service_SAS_sasUri')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "DP203datafactorymgr_ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"FileUplodedTrigger_properties_Demon_pipeline_Storage_event_parameters_FileName": {
+						"value": "[parameters('FileUplodedTrigger_properties_Demon_pipeline_Storage_event_parameters_FileName')]"
+					},
+					"FileUplodedTrigger_properties_typeProperties_scope": {
+						"value": "[parameters('FileUplodedTrigger_properties_typeProperties_scope')]"
+					},
+					"TumblingWindowsTrigger_properties_pipeline_parameters_windowStart": {
+						"value": "[parameters('TumblingWindowsTrigger_properties_pipeline_parameters_windowStart')]"
+					},
+					"TumblingWindowsTrigger_properties_pipeline_parameters_windowEnd": {
+						"value": "[parameters('TumblingWindowsTrigger_properties_pipeline_parameters_windowEnd')]"
+					},
+					"trigger1TumblingWindows_properties_pipeline_parameters_WindowsStart": {
+						"value": "[parameters('trigger1TumblingWindows_properties_pipeline_parameters_WindowsStart')]"
+					},
+					"trigger1TumblingWindows_properties_pipeline_parameters_WindowsEnd": {
+						"value": "[parameters('trigger1TumblingWindows_properties_pipeline_parameters_WindowsEnd')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'DP203datafactorymgr_ArmTemplate_0')]"
+			]
+		}
+	]
+}
