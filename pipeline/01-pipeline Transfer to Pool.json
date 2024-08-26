@@ -60,7 +60,7 @@
 				]
 			},
 			{
-				"name": "Transfer parquet to synapse dedicated Pool",
+				"name": "Copy parquet to Pool Activity",
 				"type": "Copy",
 				"dependsOn": [
 					{
@@ -80,7 +80,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "DelimitedTextSource",
+						"type": "ParquetSource",
 						"storeSettings": {
 							"type": "AzureBlobFSReadSettings",
 							"recursive": true,
@@ -89,7 +89,7 @@
 							"enablePartitionDiscovery": false
 						},
 						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
+							"type": "ParquetReadSettings"
 						}
 					},
 					"sink": {
@@ -100,120 +100,6 @@
 					"enableStaging": false,
 					"translator": {
 						"type": "TabularTranslator",
-						"mappings": [
-							{
-								"source": {
-									"name": ""
-								},
-								"sink": {
-									"name": "Correlationid",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": ""
-								},
-								"sink": {
-									"name": "Operationname",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": ""
-								},
-								"sink": {
-									"name": "Status",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": ""
-								},
-								"sink": {
-									"name": "Eventcategory",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": ""
-								},
-								"sink": {
-									"name": "Level",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": ""
-								},
-								"sink": {
-									"name": "Time",
-									"type": "DateTime",
-									"physicalType": "datetime"
-								}
-							},
-							{
-								"source": {
-									"name": ""
-								},
-								"sink": {
-									"name": "Subscription",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": ""
-								},
-								"sink": {
-									"name": "Eventinitiatedby",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": ""
-								},
-								"sink": {
-									"name": "Resourcetype",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": ""
-								},
-								"sink": {
-									"name": "Resourcegroup",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": ""
-								},
-								"sink": {
-									"name": "Resource",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							null,
-							null
-						],
 						"typeConversion": true,
 						"typeConversionSettings": {
 							"allowDataTruncation": true,
@@ -223,13 +109,13 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "Transfer_csv_to_parquet",
+						"referenceName": "Parquet_to_dedicated_Pool",
 						"type": "DatasetReference"
 					}
 				],
 				"outputs": [
 					{
-						"referenceName": "copy_parquet_to_table_dedicated_pool",
+						"referenceName": "copy_parquet_to_dedicated_SQL_Pool",
 						"type": "DatasetReference"
 					}
 				]
