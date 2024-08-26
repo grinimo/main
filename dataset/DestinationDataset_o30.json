@@ -1,0 +1,20 @@
+{
+	"name": "DestinationDataset_o30",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Copy_file_CSV_Dedicated_PoolActivityLog_synapse",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "parquet",
+				"fileSystem": "data"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}
