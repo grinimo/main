@@ -4,7 +4,7 @@
 		"description": "ce pipeline permet de copier le csv stocké dans le data lake gen2 au format csv dans le répertoire data/csv to Synapse Dedicated sql pool dont le nom de la table est PoolActivityLog",
 		"activities": [
 			{
-				"name": "Copy_u5y",
+				"name": "copy csv to dedicated Pool",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
