@@ -1,0 +1,16 @@
+{
+	"name": "TestParquet_AzureSynapseAnalytics",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DedicatedSql Pool copy csv from adf",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "PoolActivityLog"
+		}
+	}
+}
