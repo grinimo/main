@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy_o30",
+				"name": "Copy_csv_to_parquet_ADLS",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
