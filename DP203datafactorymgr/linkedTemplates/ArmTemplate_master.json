@@ -332,12 +332,6 @@
 					},
 					"TumblingWindowsTrigger_properties_pipeline_parameters_windowEnd": {
 						"value": "[parameters('TumblingWindowsTrigger_properties_pipeline_parameters_windowEnd')]"
-					},
-					"trigger1TumblingWindows_properties_pipeline_parameters_WindowsStart": {
-						"value": "[parameters('trigger1TumblingWindows_properties_pipeline_parameters_WindowsStart')]"
-					},
-					"trigger1TumblingWindows_properties_pipeline_parameters_WindowsEnd": {
-						"value": "[parameters('trigger1TumblingWindows_properties_pipeline_parameters_WindowsEnd')]"
 					}
 				}
 			},
@@ -358,6 +352,12 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"trigger1TumblingWindows_properties_pipeline_parameters_WindowsStart": {
+						"value": "[parameters('trigger1TumblingWindows_properties_pipeline_parameters_WindowsStart')]"
+					},
+					"trigger1TumblingWindows_properties_pipeline_parameters_WindowsEnd": {
+						"value": "[parameters('trigger1TumblingWindows_properties_pipeline_parameters_WindowsEnd')]"
 					}
 				}
 			},
