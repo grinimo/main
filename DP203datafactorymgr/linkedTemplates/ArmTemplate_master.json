@@ -7,9 +7,9 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "DP203datafactorymgr"
 		},
-		"02_pipeline_sql_database_Linked_service_password": {
+		"02_pipeline_sql_database_Linked_service_connectionString": {
 			"type": "secureString",
-			"metadata": "Secure string for 'password' of '02_pipeline_sql_database_Linked_service'"
+			"metadata": "Secure string for 'connectionString' of '02_pipeline_sql_database_Linked_service'"
 		},
 		"02_pipeline_staging_accountKey": {
 			"type": "secureString",
@@ -31,9 +31,9 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'Copy_file_CSV_Dedicated_PoolActivityLog_synapse'"
 		},
-		"DedicatedSql Pool copy csv from adf_password": {
+		"DedicatedSql Pool copy csv from adf_connectionString": {
 			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'DedicatedSql Pool copy csv from adf'"
+			"metadata": "Secure string for 'connectionString' of 'DedicatedSql Pool copy csv from adf'"
 		},
 		"DynamicAzureDataLakeStorage_training_accountKey": {
 			"type": "secureString",
@@ -50,18 +50,6 @@
 		"TestParquet_linked service_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'TestParquet_linked service'"
-		},
-		"02_pipeline_sql_database_Linked_service_properties_typeProperties_server": {
-			"type": "string",
-			"defaultValue": "dp203databaseservertraining.database.windows.net"
-		},
-		"02_pipeline_sql_database_Linked_service_properties_typeProperties_database": {
-			"type": "string",
-			"defaultValue": "DP203SQLdatabase"
-		},
-		"02_pipeline_sql_database_Linked_service_properties_typeProperties_userName": {
-			"type": "string",
-			"defaultValue": "adminsql"
 		},
 		"02_pipeline_staging_properties_typeProperties_url": {
 			"type": "string",
@@ -98,18 +86,6 @@
 		"Copy_file_CSV_Dedicated_PoolActivityLog_synapse_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://dp203storageaccountt.dfs.core.windows.net/"
-		},
-		"DedicatedSql Pool copy csv from adf_properties_typeProperties_server": {
-			"type": "string",
-			"defaultValue": "dp203training001.sql.azuresynapse.net"
-		},
-		"DedicatedSql Pool copy csv from adf_properties_typeProperties_database": {
-			"type": "string",
-			"defaultValue": "dp203DedicatedPool"
-		},
-		"DedicatedSql Pool copy csv from adf_properties_typeProperties_userName": {
-			"type": "string",
-			"defaultValue": "sqladminuser"
 		},
 		"DynamicAzureDataLakeStorage_training_properties_typeProperties_url": {
 			"type": "string",
@@ -198,8 +174,8 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
-					"02_pipeline_sql_database_Linked_service_password": {
-						"value": "[parameters('02_pipeline_sql_database_Linked_service_password')]"
+					"02_pipeline_sql_database_Linked_service_connectionString": {
+						"value": "[parameters('02_pipeline_sql_database_Linked_service_connectionString')]"
 					},
 					"02_pipeline_staging_accountKey": {
 						"value": "[parameters('02_pipeline_staging_accountKey')]"
@@ -216,8 +192,8 @@
 					"Copy_file_CSV_Dedicated_PoolActivityLog_synapse_accountKey": {
 						"value": "[parameters('Copy_file_CSV_Dedicated_PoolActivityLog_synapse_accountKey')]"
 					},
-					"DedicatedSql Pool copy csv from adf_password": {
-						"value": "[parameters('DedicatedSql Pool copy csv from adf_password')]"
+					"DedicatedSql Pool copy csv from adf_connectionString": {
+						"value": "[parameters('DedicatedSql Pool copy csv from adf_connectionString')]"
 					},
 					"DynamicAzureDataLakeStorage_training_accountKey": {
 						"value": "[parameters('DynamicAzureDataLakeStorage_training_accountKey')]"
@@ -230,15 +206,6 @@
 					},
 					"TestParquet_linked service_accountKey": {
 						"value": "[parameters('TestParquet_linked service_accountKey')]"
-					},
-					"02_pipeline_sql_database_Linked_service_properties_typeProperties_server": {
-						"value": "[parameters('02_pipeline_sql_database_Linked_service_properties_typeProperties_server')]"
-					},
-					"02_pipeline_sql_database_Linked_service_properties_typeProperties_database": {
-						"value": "[parameters('02_pipeline_sql_database_Linked_service_properties_typeProperties_database')]"
-					},
-					"02_pipeline_sql_database_Linked_service_properties_typeProperties_userName": {
-						"value": "[parameters('02_pipeline_sql_database_Linked_service_properties_typeProperties_userName')]"
 					},
 					"02_pipeline_staging_properties_typeProperties_url": {
 						"value": "[parameters('02_pipeline_staging_properties_typeProperties_url')]"
@@ -266,15 +233,6 @@
 					},
 					"Copy_file_CSV_Dedicated_PoolActivityLog_synapse_properties_typeProperties_url": {
 						"value": "[parameters('Copy_file_CSV_Dedicated_PoolActivityLog_synapse_properties_typeProperties_url')]"
-					},
-					"DedicatedSql Pool copy csv from adf_properties_typeProperties_server": {
-						"value": "[parameters('DedicatedSql Pool copy csv from adf_properties_typeProperties_server')]"
-					},
-					"DedicatedSql Pool copy csv from adf_properties_typeProperties_database": {
-						"value": "[parameters('DedicatedSql Pool copy csv from adf_properties_typeProperties_database')]"
-					},
-					"DedicatedSql Pool copy csv from adf_properties_typeProperties_userName": {
-						"value": "[parameters('DedicatedSql Pool copy csv from adf_properties_typeProperties_userName')]"
 					},
 					"DynamicAzureDataLakeStorage_training_properties_typeProperties_url": {
 						"value": "[parameters('DynamicAzureDataLakeStorage_training_properties_typeProperties_url')]"
@@ -320,18 +278,6 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
-					},
-					"FileUplodedTrigger_properties_Demon_pipeline_Storage_event_parameters_FileName": {
-						"value": "[parameters('FileUplodedTrigger_properties_Demon_pipeline_Storage_event_parameters_FileName')]"
-					},
-					"FileUplodedTrigger_properties_typeProperties_scope": {
-						"value": "[parameters('FileUplodedTrigger_properties_typeProperties_scope')]"
-					},
-					"TumblingWindowsTrigger_properties_pipeline_parameters_windowStart": {
-						"value": "[parameters('TumblingWindowsTrigger_properties_pipeline_parameters_windowStart')]"
-					},
-					"TumblingWindowsTrigger_properties_pipeline_parameters_windowEnd": {
-						"value": "[parameters('TumblingWindowsTrigger_properties_pipeline_parameters_windowEnd')]"
 					}
 				}
 			},
@@ -352,6 +298,18 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"FileUplodedTrigger_properties_Demon_pipeline_Storage_event_parameters_FileName": {
+						"value": "[parameters('FileUplodedTrigger_properties_Demon_pipeline_Storage_event_parameters_FileName')]"
+					},
+					"FileUplodedTrigger_properties_typeProperties_scope": {
+						"value": "[parameters('FileUplodedTrigger_properties_typeProperties_scope')]"
+					},
+					"TumblingWindowsTrigger_properties_pipeline_parameters_windowStart": {
+						"value": "[parameters('TumblingWindowsTrigger_properties_pipeline_parameters_windowStart')]"
+					},
+					"TumblingWindowsTrigger_properties_pipeline_parameters_windowEnd": {
+						"value": "[parameters('TumblingWindowsTrigger_properties_pipeline_parameters_windowEnd')]"
 					},
 					"trigger1TumblingWindows_properties_pipeline_parameters_WindowsStart": {
 						"value": "[parameters('trigger1TumblingWindows_properties_pipeline_parameters_WindowsStart')]"

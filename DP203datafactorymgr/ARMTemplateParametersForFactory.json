@@ -5,7 +5,7 @@
 		"factoryName": {
 			"value": "DP203datafactorymgr"
 		},
-		"02_pipeline_sql_database_Linked_service_password": {
+		"02_pipeline_sql_database_Linked_service_connectionString": {
 			"value": ""
 		},
 		"02_pipeline_staging_accountKey": {
@@ -23,7 +23,7 @@
 		"Copy_file_CSV_Dedicated_PoolActivityLog_synapse_accountKey": {
 			"value": ""
 		},
-		"DedicatedSql Pool copy csv from adf_password": {
+		"DedicatedSql Pool copy csv from adf_connectionString": {
 			"value": ""
 		},
 		"DynamicAzureDataLakeStorage_training_accountKey": {
@@ -37,15 +37,6 @@
 		},
 		"TestParquet_linked service_accountKey": {
 			"value": ""
-		},
-		"02_pipeline_sql_database_Linked_service_properties_typeProperties_server": {
-			"value": "dp203databaseservertraining.database.windows.net"
-		},
-		"02_pipeline_sql_database_Linked_service_properties_typeProperties_database": {
-			"value": "DP203SQLdatabase"
-		},
-		"02_pipeline_sql_database_Linked_service_properties_typeProperties_userName": {
-			"value": "adminsql"
 		},
 		"02_pipeline_staging_properties_typeProperties_url": {
 			"value": "https://dp203storageaccountt.dfs.core.windows.net/"
@@ -73,15 +64,6 @@
 		},
 		"Copy_file_CSV_Dedicated_PoolActivityLog_synapse_properties_typeProperties_url": {
 			"value": "https://dp203storageaccountt.dfs.core.windows.net/"
-		},
-		"DedicatedSql Pool copy csv from adf_properties_typeProperties_server": {
-			"value": "dp203training001.sql.azuresynapse.net"
-		},
-		"DedicatedSql Pool copy csv from adf_properties_typeProperties_database": {
-			"value": "dp203DedicatedPool"
-		},
-		"DedicatedSql Pool copy csv from adf_properties_typeProperties_userName": {
-			"value": "sqladminuser"
 		},
 		"DynamicAzureDataLakeStorage_training_properties_typeProperties_url": {
 			"value": "https://dp203accountblobtraining.dfs.core.windows.net/"

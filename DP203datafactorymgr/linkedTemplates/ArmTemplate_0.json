@@ -7,9 +7,9 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "DP203datafactorymgr"
 		},
-		"02_pipeline_sql_database_Linked_service_password": {
+		"02_pipeline_sql_database_Linked_service_connectionString": {
 			"type": "secureString",
-			"metadata": "Secure string for 'password' of '02_pipeline_sql_database_Linked_service'"
+			"metadata": "Secure string for 'connectionString' of '02_pipeline_sql_database_Linked_service'"
 		},
 		"02_pipeline_staging_accountKey": {
 			"type": "secureString",
@@ -31,9 +31,9 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'Copy_file_CSV_Dedicated_PoolActivityLog_synapse'"
 		},
-		"DedicatedSql Pool copy csv from adf_password": {
+		"DedicatedSql Pool copy csv from adf_connectionString": {
 			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'DedicatedSql Pool copy csv from adf'"
+			"metadata": "Secure string for 'connectionString' of 'DedicatedSql Pool copy csv from adf'"
 		},
 		"DynamicAzureDataLakeStorage_training_accountKey": {
 			"type": "secureString",
@@ -50,18 +50,6 @@
 		"TestParquet_linked service_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'TestParquet_linked service'"
-		},
-		"02_pipeline_sql_database_Linked_service_properties_typeProperties_server": {
-			"type": "string",
-			"defaultValue": "dp203databaseservertraining.database.windows.net"
-		},
-		"02_pipeline_sql_database_Linked_service_properties_typeProperties_database": {
-			"type": "string",
-			"defaultValue": "DP203SQLdatabase"
-		},
-		"02_pipeline_sql_database_Linked_service_properties_typeProperties_userName": {
-			"type": "string",
-			"defaultValue": "adminsql"
 		},
 		"02_pipeline_staging_properties_typeProperties_url": {
 			"type": "string",
@@ -98,18 +86,6 @@
 		"Copy_file_CSV_Dedicated_PoolActivityLog_synapse_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://dp203storageaccountt.dfs.core.windows.net/"
-		},
-		"DedicatedSql Pool copy csv from adf_properties_typeProperties_server": {
-			"type": "string",
-			"defaultValue": "dp203training001.sql.azuresynapse.net"
-		},
-		"DedicatedSql Pool copy csv from adf_properties_typeProperties_database": {
-			"type": "string",
-			"defaultValue": "dp203DedicatedPool"
-		},
-		"DedicatedSql Pool copy csv from adf_properties_typeProperties_userName": {
-			"type": "string",
-			"defaultValue": "sqladminuser"
 		},
 		"DynamicAzureDataLakeStorage_training_properties_typeProperties_url": {
 			"type": "string",
@@ -409,16 +385,7 @@
 				"annotations": [],
 				"type": "AzureSqlDatabase",
 				"typeProperties": {
-					"server": "[parameters('02_pipeline_sql_database_Linked_service_properties_typeProperties_server')]",
-					"database": "[parameters('02_pipeline_sql_database_Linked_service_properties_typeProperties_database')]",
-					"encrypt": "mandatory",
-					"trustServerCertificate": false,
-					"authenticationType": "SQL",
-					"userName": "[parameters('02_pipeline_sql_database_Linked_service_properties_typeProperties_userName')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('02_pipeline_sql_database_Linked_service_password')]"
-					}
+					"connectionString": "[parameters('02_pipeline_sql_database_Linked_service_connectionString')]"
 				}
 			},
 			"dependsOn": []
@@ -526,16 +493,7 @@
 				"annotations": [],
 				"type": "AzureSqlDW",
 				"typeProperties": {
-					"server": "[parameters('DedicatedSql Pool copy csv from adf_properties_typeProperties_server')]",
-					"database": "[parameters('DedicatedSql Pool copy csv from adf_properties_typeProperties_database')]",
-					"encrypt": "mandatory",
-					"trustServerCertificate": false,
-					"authenticationType": "SQL",
-					"userName": "[parameters('DedicatedSql Pool copy csv from adf_properties_typeProperties_userName')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('DedicatedSql Pool copy csv from adf_password')]"
-					}
+					"connectionString": "[parameters('DedicatedSql Pool copy csv from adf_connectionString')]"
 				}
 			},
 			"dependsOn": []
