@@ -7,6 +7,18 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "DP203datafactorymgr"
 		},
+		"02_pipeline_sql_database_Linked_service_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of '02_pipeline_sql_database_Linked_service'"
+		},
+		"02_pipeline_staging_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of '02_pipeline_staging'"
+		},
+		"02_pipeline_synpase_linked_service_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of '02_pipeline_synpase_linked_service'"
+		},
 		"AdvantureWork_LS_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'AdvantureWork_LS'"
@@ -38,6 +50,34 @@
 		"TestParquet_linked service_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'TestParquet_linked service'"
+		},
+		"02_pipeline_sql_database_Linked_service_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "dp203databaseservertraining.database.windows.net"
+		},
+		"02_pipeline_sql_database_Linked_service_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "DP203SQLdatabase"
+		},
+		"02_pipeline_sql_database_Linked_service_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "adminsql"
+		},
+		"02_pipeline_staging_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://dp203storageaccountt.dfs.core.windows.net/"
+		},
+		"02_pipeline_synpase_linked_service_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "dp203training001.sql.azuresynapse.net"
+		},
+		"02_pipeline_synpase_linked_service_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "dp203DedicatedPool"
+		},
+		"02_pipeline_synpase_linked_service_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "sqladminuser"
 		},
 		"AdvantureWork_LS_properties_typeProperties_server": {
 			"type": "string",
@@ -158,6 +198,15 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"02_pipeline_sql_database_Linked_service_password": {
+						"value": "[parameters('02_pipeline_sql_database_Linked_service_password')]"
+					},
+					"02_pipeline_staging_accountKey": {
+						"value": "[parameters('02_pipeline_staging_accountKey')]"
+					},
+					"02_pipeline_synpase_linked_service_password": {
+						"value": "[parameters('02_pipeline_synpase_linked_service_password')]"
+					},
 					"AdvantureWork_LS_password": {
 						"value": "[parameters('AdvantureWork_LS_password')]"
 					},
@@ -181,6 +230,27 @@
 					},
 					"TestParquet_linked service_accountKey": {
 						"value": "[parameters('TestParquet_linked service_accountKey')]"
+					},
+					"02_pipeline_sql_database_Linked_service_properties_typeProperties_server": {
+						"value": "[parameters('02_pipeline_sql_database_Linked_service_properties_typeProperties_server')]"
+					},
+					"02_pipeline_sql_database_Linked_service_properties_typeProperties_database": {
+						"value": "[parameters('02_pipeline_sql_database_Linked_service_properties_typeProperties_database')]"
+					},
+					"02_pipeline_sql_database_Linked_service_properties_typeProperties_userName": {
+						"value": "[parameters('02_pipeline_sql_database_Linked_service_properties_typeProperties_userName')]"
+					},
+					"02_pipeline_staging_properties_typeProperties_url": {
+						"value": "[parameters('02_pipeline_staging_properties_typeProperties_url')]"
+					},
+					"02_pipeline_synpase_linked_service_properties_typeProperties_server": {
+						"value": "[parameters('02_pipeline_synpase_linked_service_properties_typeProperties_server')]"
+					},
+					"02_pipeline_synpase_linked_service_properties_typeProperties_database": {
+						"value": "[parameters('02_pipeline_synpase_linked_service_properties_typeProperties_database')]"
+					},
+					"02_pipeline_synpase_linked_service_properties_typeProperties_userName": {
+						"value": "[parameters('02_pipeline_synpase_linked_service_properties_typeProperties_userName')]"
 					},
 					"AdvantureWork_LS_properties_typeProperties_server": {
 						"value": "[parameters('AdvantureWork_LS_properties_typeProperties_server')]"
@@ -273,6 +343,26 @@
 			},
 			"dependsOn": [
 				"[resourceId('Microsoft.Resources/deployments', 'DP203datafactorymgr_ArmTemplate_0')]"
+			]
+		},
+		{
+			"name": "DP203datafactorymgr_ArmTemplate_2",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_2.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'DP203datafactorymgr_ArmTemplate_1')]"
 			]
 		}
 	]

@@ -7,6 +7,18 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "DP203datafactorymgr"
 		},
+		"02_pipeline_sql_database_Linked_service_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of '02_pipeline_sql_database_Linked_service'"
+		},
+		"02_pipeline_staging_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of '02_pipeline_staging'"
+		},
+		"02_pipeline_synpase_linked_service_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of '02_pipeline_synpase_linked_service'"
+		},
 		"AdvantureWork_LS_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'AdvantureWork_LS'"
@@ -38,6 +50,34 @@
 		"TestParquet_linked service_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'TestParquet_linked service'"
+		},
+		"02_pipeline_sql_database_Linked_service_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "dp203databaseservertraining.database.windows.net"
+		},
+		"02_pipeline_sql_database_Linked_service_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "DP203SQLdatabase"
+		},
+		"02_pipeline_sql_database_Linked_service_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "adminsql"
+		},
+		"02_pipeline_staging_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://dp203storageaccountt.dfs.core.windows.net/"
+		},
+		"02_pipeline_synpase_linked_service_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "dp203training001.sql.azuresynapse.net"
+		},
+		"02_pipeline_synpase_linked_service_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "dp203DedicatedPool"
+		},
+		"02_pipeline_synpase_linked_service_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "sqladminuser"
 		},
 		"AdvantureWork_LS_properties_typeProperties_server": {
 			"type": "string",
@@ -362,6 +402,67 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/02_pipeline_sql_database_Linked_service')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"server": "[parameters('02_pipeline_sql_database_Linked_service_properties_typeProperties_server')]",
+					"database": "[parameters('02_pipeline_sql_database_Linked_service_properties_typeProperties_database')]",
+					"encrypt": "mandatory",
+					"trustServerCertificate": false,
+					"authenticationType": "SQL",
+					"userName": "[parameters('02_pipeline_sql_database_Linked_service_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('02_pipeline_sql_database_Linked_service_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/02_pipeline_staging')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('02_pipeline_staging_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('02_pipeline_staging_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/02_pipeline_synpase_linked_service')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDW",
+				"typeProperties": {
+					"server": "[parameters('02_pipeline_synpase_linked_service_properties_typeProperties_server')]",
+					"database": "[parameters('02_pipeline_synpase_linked_service_properties_typeProperties_database')]",
+					"encrypt": "mandatory",
+					"trustServerCertificate": false,
+					"authenticationType": "SQL",
+					"userName": "[parameters('02_pipeline_synpase_linked_service_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('02_pipeline_synpase_linked_service_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/AdvantureWork_LS')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -610,145 +711,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/child')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CustomerSQL_DS')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AdvantureWork_LS",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "CustomerID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "NameStyle",
-						"type": "bit"
-					},
-					{
-						"name": "Title",
-						"type": "nvarchar"
-					},
-					{
-						"name": "FirstName",
-						"type": "nvarchar"
-					},
-					{
-						"name": "MiddleName",
-						"type": "nvarchar"
-					},
-					{
-						"name": "LastName",
-						"type": "nvarchar"
-					},
-					{
-						"name": "Suffix",
-						"type": "nvarchar"
-					},
-					{
-						"name": "CompanyName",
-						"type": "nvarchar"
-					},
-					{
-						"name": "SalesPerson",
-						"type": "nvarchar"
-					},
-					{
-						"name": "EmailAddress",
-						"type": "nvarchar"
-					},
-					{
-						"name": "Phone",
-						"type": "nvarchar"
-					},
-					{
-						"name": "PasswordHash",
-						"type": "varchar"
-					},
-					{
-						"name": "PasswordSalt",
-						"type": "varchar"
-					},
-					{
-						"name": "rowguid",
-						"type": "uniqueidentifier"
-					},
-					{
-						"name": "ModifiedDate",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					}
-				],
-				"typeProperties": {
-					"schema": "SalesLT",
-					"table": "Customer"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AdvantureWork_LS')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Customer_csv_DS')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage_LS",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "customer.csv",
-						"folderPath": "sqlservertables/AdeventureWorks/Customers/Year=2023/Month=10/Day=20",
-						"fileSystem": "raw"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage_LS')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DestinationDataset_o30')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "Copy_file_CSV_Dedicated_PoolActivityLog_synapse",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"folderPath": "parquet",
-						"fileSystem": "data"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/Copy_file_CSV_Dedicated_PoolActivityLog_synapse')]"
 			]
 		}
 	]
