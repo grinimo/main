@@ -80,7 +80,7 @@
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> SalesOrdersDetails",
-				"SalesOrderHeaderStream, SalesOrdersDetails join(SalesOrderHeaderStream@SalesOrderID == SalesOrdersDetails@CustomerID,",
+				"SalesOrderHeaderStream, SalesOrdersDetails join(SalesOrderHeaderStream@SalesOrderID == SalesOrderDetailID,",
 				"     joinType:'inner',",
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
