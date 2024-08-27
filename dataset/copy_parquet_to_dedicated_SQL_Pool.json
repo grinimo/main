@@ -9,55 +9,77 @@
 		"type": "AzureSqlDWTable",
 		"schema": [
 			{
-				"name": "Correlationid",
-				"type": "varchar"
+				"name": "SalesOrderID",
+				"type": "int",
+				"precision": 10
 			},
 			{
-				"name": "Operationname",
-				"type": "varchar"
-			},
-			{
-				"name": "Status",
-				"type": "varchar"
-			},
-			{
-				"name": "Eventcategory",
-				"type": "varchar"
-			},
-			{
-				"name": "Level",
-				"type": "varchar"
-			},
-			{
-				"name": "Time",
+				"name": "OrderDate",
 				"type": "datetime",
 				"precision": 23,
 				"scale": 3
 			},
 			{
-				"name": "Subscription",
-				"type": "varchar"
+				"name": "CustomerID",
+				"type": "int",
+				"precision": 10
 			},
 			{
-				"name": "Eventinitiatedby",
-				"type": "varchar"
+				"name": "SubTotal",
+				"type": "money",
+				"precision": 19,
+				"scale": 4
 			},
 			{
-				"name": "Resourcetype",
-				"type": "varchar"
+				"name": "TaxAmt",
+				"type": "money",
+				"precision": 19,
+				"scale": 4
 			},
 			{
-				"name": "Resourcegroup",
-				"type": "varchar"
+				"name": "Freight",
+				"type": "money",
+				"precision": 19,
+				"scale": 4
 			},
 			{
-				"name": "Resource",
-				"type": "varchar"
+				"name": "TotalDue",
+				"type": "money",
+				"precision": 19,
+				"scale": 4
+			},
+			{
+				"name": "OrderQty",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ProductID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "UnitPrice",
+				"type": "money",
+				"precision": 19,
+				"scale": 4
+			},
+			{
+				"name": "UnitPriceDiscount",
+				"type": "money",
+				"precision": 19,
+				"scale": 4
+			},
+			{
+				"name": "LineTotal",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 0
 			}
 		],
 		"typeProperties": {
 			"schema": "dbo",
-			"table": "PoolActivityLog"
+			"table": "factSales"
 		}
 	}
 }
