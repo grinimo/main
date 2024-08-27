@@ -9,57 +9,42 @@
 		"type": "AzureSqlTable",
 		"schema": [
 			{
-				"name": "CustomerID",
+				"name": "SalesOrderID",
 				"type": "int",
 				"precision": 10
 			},
 			{
-				"name": "NameStyle",
-				"type": "bit"
+				"name": "SalesOrderDetailID",
+				"type": "int",
+				"precision": 10
 			},
 			{
-				"name": "Title",
-				"type": "nvarchar"
+				"name": "OrderQty",
+				"type": "smallint",
+				"precision": 5
 			},
 			{
-				"name": "FirstName",
-				"type": "nvarchar"
+				"name": "ProductID",
+				"type": "int",
+				"precision": 10
 			},
 			{
-				"name": "MiddleName",
-				"type": "nvarchar"
+				"name": "UnitPrice",
+				"type": "money",
+				"precision": 19,
+				"scale": 4
 			},
 			{
-				"name": "LastName",
-				"type": "nvarchar"
+				"name": "UnitPriceDiscount",
+				"type": "money",
+				"precision": 19,
+				"scale": 4
 			},
 			{
-				"name": "Suffix",
-				"type": "nvarchar"
-			},
-			{
-				"name": "CompanyName",
-				"type": "nvarchar"
-			},
-			{
-				"name": "SalesPerson",
-				"type": "nvarchar"
-			},
-			{
-				"name": "EmailAddress",
-				"type": "nvarchar"
-			},
-			{
-				"name": "Phone",
-				"type": "nvarchar"
-			},
-			{
-				"name": "PasswordHash",
-				"type": "varchar"
-			},
-			{
-				"name": "PasswordSalt",
-				"type": "varchar"
+				"name": "LineTotal",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 6
 			},
 			{
 				"name": "rowguid",
@@ -74,7 +59,7 @@
 		],
 		"typeProperties": {
 			"schema": "SalesLT",
-			"table": "Customer"
+			"table": "SalesOrderDetail"
 		}
 	}
 }
