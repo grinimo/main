@@ -1,0 +1,12 @@
+{
+	"name": "02_pipeple_data_set_sql_database",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "02_pipeline_sql_database_Linked_service",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": []
+	}
+}
