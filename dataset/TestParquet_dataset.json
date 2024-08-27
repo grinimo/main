@@ -38,7 +38,7 @@
 			},
 			{
 				"name": "Time",
-				"type": "UTF8"
+				"type": "INT96"
 			},
 			{
 				"name": "Subscription",
