@@ -1,0 +1,19 @@
+{
+	"name": "05_pipeline_databricks_linked_service",
+	"properties": {
+		"annotations": [],
+		"type": "AzureDatabricks",
+		"typeProperties": {
+			"domain": "https://adb-7020639691561392.12.azuredatabricks.net",
+			"accessToken": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "05_pipeline_databricks_orchestration_key_vault",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "dp203-personnalAcessTokenDatabricks"
+			},
+			"existingClusterId": "0821-103528-5o629451"
+		}
+	}
+}
