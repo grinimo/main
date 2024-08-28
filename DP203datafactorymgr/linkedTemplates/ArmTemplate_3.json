@@ -46,8 +46,8 @@
 									"Product": {},
 									"ProductCategory": {},
 									"Customer": {},
-									"DimProduct": {},
-									"DimCustomers": {}
+									"DimCustomers": {},
+									"sinkDimProduct": {}
 								}
 							},
 							"staging": {

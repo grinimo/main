@@ -870,8 +870,8 @@
 									"Product": {},
 									"ProductCategory": {},
 									"Customer": {},
-									"DimProduct": {},
-									"DimCustomers": {}
+									"DimCustomers": {},
+									"sinkDimProduct": {}
 								}
 							},
 							"staging": {
@@ -3576,17 +3576,17 @@
 					"sinks": [
 						{
 							"dataset": {
-								"referenceName": "02_dataflow_DimProduct",
-								"type": "DatasetReference"
-							},
-							"name": "DimProduct"
-						},
-						{
-							"dataset": {
 								"referenceName": "02_dataflow_dimCustomer",
 								"type": "DatasetReference"
 							},
 							"name": "DimCustomers"
+						},
+						{
+							"dataset": {
+								"referenceName": "02_dataflow_DimProduct",
+								"type": "DatasetReference"
+							},
+							"name": "sinkDimProduct"
 						}
 					],
 					"transformations": [
@@ -3598,6 +3598,9 @@
 						},
 						{
 							"name": "selectColumnsCustomers"
+						},
+						{
+							"name": "filterNotNullValueColor"
 						}
 					],
 					"scriptLines": [
@@ -3676,32 +3679,7 @@
 						"     ),",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> selectColumnsCustomers",
-						"SelectColumns sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     input(",
-						"          ProductID as integer,",
-						"          ProductNumber as string,",
-						"          Color as string,",
-						"          ProductCategoryID as integer,",
-						"          ProductCategoryName as string",
-						"     ),",
-						"     deletable:false,",
-						"     insertable:true,",
-						"     updateable:false,",
-						"     upsertable:false,",
-						"     format: 'table',",
-						"     staged: true,",
-						"     allowCopyCommand: true,",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     errorHandlingOption: 'stopOnFirstError',",
-						"     mapColumn(",
-						"          ProductID,",
-						"          ProductNumber,",
-						"          Color,",
-						"          ProductCategoryID,",
-						"          ProductCategoryName",
-						"     )) ~> DimProduct",
+						"SelectColumns filter(!isNull(Color)) ~> filterNotNullValueColor",
 						"selectColumnsCustomers sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     input(",
@@ -3721,7 +3699,26 @@
 						"     mapColumn(",
 						"          CustomerID,",
 						"          CompanyName",
-						"     )) ~> DimCustomers"
+						"     )) ~> DimCustomers",
+						"filterNotNullValueColor sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          ProductID as integer,",
+						"          ProductNumber as string,",
+						"          Color as string,",
+						"          ProductCategoryID as integer,",
+						"          ProductCategoryName as string",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     staged: true,",
+						"     allowCopyCommand: true,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError') ~> sinkDimProduct"
 					]
 				}
 			},
@@ -3729,8 +3726,8 @@
 				"[concat(variables('factoryId'), '/datasets/02_dataflow_Customer')]",
 				"[concat(variables('factoryId'), '/datasets/02_dataflow_ProductCategory')]",
 				"[concat(variables('factoryId'), '/datasets/02_dataflow_DimCustomers')]",
-				"[concat(variables('factoryId'), '/datasets/02_dataflow_DimProduct')]",
-				"[concat(variables('factoryId'), '/datasets/02_dataflow_dimCustomer')]"
+				"[concat(variables('factoryId'), '/datasets/02_dataflow_dimCustomer')]",
+				"[concat(variables('factoryId'), '/datasets/02_dataflow_DimProduct')]"
 			]
 		},
 		{
