@@ -9,6 +9,11 @@
 		"type": "AzureSqlDWTable",
 		"schema": [
 			{
+				"name": "ProductSerrugateKey",
+				"type": "long",
+				"precision": 10
+			},
+			{
 				"name": "ProductID",
 				"type": "int",
 				"precision": 10
@@ -29,10 +34,6 @@
 			{
 				"name": "ProductCategoryName",
 				"type": "varchar"
-			},
-			{
-				"name": "ProductSerrugateKey",
-				"type": "int"
 			}
 		],
 		"typeProperties": {
