@@ -23,7 +23,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "01_dataflow_warehouse",
+						"referenceName": "01_dataflow_FactSales",
 						"type": "DataFlowReference"
 					},
 					"staging": {

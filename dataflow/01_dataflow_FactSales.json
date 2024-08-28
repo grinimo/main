@@ -1,5 +1,5 @@
 {
-	"name": "01_dataflow_warehouse",
+	"name": "01_dataflow_FactSales",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
