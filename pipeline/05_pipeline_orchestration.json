@@ -43,7 +43,14 @@
 			{
 				"name": "notebook using managed identity",
 				"type": "DatabricksNotebook",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Wait1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -52,6 +59,9 @@
 					"secureInput": false
 				},
 				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/mohamed.grini@aosis.net"
+				},
 				"linkedServiceName": {
 					"referenceName": "05_pipeline_databricks_orechestration_managed_identity",
 					"type": "LinkedServiceReference"
