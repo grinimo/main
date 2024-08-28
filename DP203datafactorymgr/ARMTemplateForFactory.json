@@ -3705,7 +3705,7 @@
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     isolationLevel: 'READ_UNCOMMITTED',",
-						"     query: 'SELECT * FROM [SalesLT].[Customer]\\nWHERE CustomerID>4000',",
+						"     query: 'SELECT * FROM [SalesLT].[Customer]\\nWHERE CustomerID<=4000',",
 						"     format: 'query') ~> Customer",
 						"Product, ProductCategory join(Product@ProductCategoryID == ProductCategory@ProductCategoryID,",
 						"     joinType:'inner',",
