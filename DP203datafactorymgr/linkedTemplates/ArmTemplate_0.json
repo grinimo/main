@@ -71,6 +71,10 @@
 			"type": "string",
 			"defaultValue": "https://dp203-mykey-vault.vault.azure.net/"
 		},
+		"05_pipeline_databricks_orechestration_managed_identity_properties_typeProperties_existingClusterId": {
+			"type": "string",
+			"defaultValue": "0821-103528-5o629451"
+		},
 		"AdvantureWork_LS_properties_typeProperties_server": {
 			"type": "string",
 			"defaultValue": "dp203databaseservertraining.database.windows.net"
@@ -447,6 +451,22 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/05_pipeline_databricks_orechestration_managed_identity')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureDatabricks",
+				"typeProperties": {
+					"domain": "https://adb-7020639691561392.12.azuredatabricks.net",
+					"authentication": "MSI",
+					"workspaceResourceId": "/subscriptions/f00081c2-4f6c-4b2b-927b-02b4f7ddd4a0/resourceGroups/POC-Databricks-E2E/providers/Microsoft.Databricks/workspaces/databricksPremium",
+					"existingClusterId": "[parameters('05_pipeline_databricks_orechestration_managed_identity_properties_typeProperties_existingClusterId')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/AdvantureWork_LS')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -629,13 +649,6 @@
 					}
 				}
 			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/default')]",
-			"type": "Microsoft.DataFactory/factories/managedVirtualNetworks",
-			"apiVersion": "2018-06-01",
-			"properties": {},
 			"dependsOn": []
 		}
 	]

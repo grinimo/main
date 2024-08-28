@@ -41,6 +41,29 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/Transfer_To_file_parquet')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Copy_file_CSV_Dedicated_PoolActivityLog_synapse",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "parquet",
+						"fileSystem": "data"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Transfer_csv_to_parquet')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -803,7 +826,8 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/Transfer_csv_to_parquet')]"
+				"[concat(variables('factoryId'), '/datasets/Transfer_csv_to_parquet')]",
+				"[concat(variables('factoryId'), '/datasets/Transfer_To_file_parquet')]"
 			]
 		},
 		{
@@ -1034,6 +1058,33 @@
 						},
 						"linkedServiceName": {
 							"referenceName": "05_pipeline_databricks_linked_service",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "notebook using managed identity",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "Wait1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Users/mohamed.grini@aosis.net"
+						},
+						"linkedServiceName": {
+							"referenceName": "05_pipeline_databricks_orechestration_managed_identity",
 							"type": "LinkedServiceReference"
 						}
 					}

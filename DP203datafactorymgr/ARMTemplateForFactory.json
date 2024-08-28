@@ -75,6 +75,10 @@
 			"type": "string",
 			"defaultValue": "https://dp203-mykey-vault.vault.azure.net/"
 		},
+		"05_pipeline_databricks_orechestration_managed_identity_properties_typeProperties_existingClusterId": {
+			"type": "string",
+			"defaultValue": "0821-103528-5o629451"
+		},
 		"AdvantureWork_LS_properties_typeProperties_server": {
 			"type": "string",
 			"defaultValue": "dp203databaseservertraining.database.windows.net"
@@ -915,6 +919,33 @@
 							"referenceName": "05_pipeline_databricks_linked_service",
 							"type": "LinkedServiceReference"
 						}
+					},
+					{
+						"name": "notebook using managed identity",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "Wait1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Users/mohamed.grini@aosis.net"
+						},
+						"linkedServiceName": {
+							"referenceName": "05_pipeline_databricks_orechestration_managed_identity",
+							"type": "LinkedServiceReference"
+						}
 					}
 				],
 				"policy": {
@@ -923,7 +954,8 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/05_pipeline_databricks_linked_service')]"
+				"[concat(variables('factoryId'), '/linkedServices/05_pipeline_databricks_linked_service')]",
+				"[concat(variables('factoryId'), '/linkedServices/05_pipeline_databricks_orechestration_managed_identity')]"
 			]
 		},
 		{
@@ -2822,6 +2854,22 @@
 				"type": "AzureKeyVault",
 				"typeProperties": {
 					"baseUrl": "[parameters('05_pipeline_databricks_orchestration_key_vault_properties_typeProperties_baseUrl')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/05_pipeline_databricks_orechestration_managed_identity')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureDatabricks",
+				"typeProperties": {
+					"domain": "https://adb-7020639691561392.12.azuredatabricks.net",
+					"authentication": "MSI",
+					"workspaceResourceId": "/subscriptions/f00081c2-4f6c-4b2b-927b-02b4f7ddd4a0/resourceGroups/POC-Databricks-E2E/providers/Microsoft.Databricks/workspaces/databricksPremium",
+					"existingClusterId": "[parameters('05_pipeline_databricks_orechestration_managed_identity_properties_typeProperties_existingClusterId')]"
 				}
 			},
 			"dependsOn": []
