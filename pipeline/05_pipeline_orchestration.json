@@ -60,7 +60,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Users/f81a3e6c-4f71-430d-bccb-a6122c68c7ff"
+					"notebookPath": "/Users/mohamed.grini@aosis.net/orchestrationSample"
 				},
 				"linkedServiceName": {
 					"referenceName": "05_pipeline_databricks_orechestration_managed_identity",
