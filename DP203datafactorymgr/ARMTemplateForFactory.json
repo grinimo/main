@@ -2052,6 +2052,10 @@
 					{
 						"name": "ProductCategoryName",
 						"type": "varchar"
+					},
+					{
+						"name": "ProductSerrugateKey",
+						"type": "int"
 					}
 				],
 				"typeProperties": {
@@ -3632,6 +3636,9 @@
 						},
 						{
 							"name": "filterNotNullValueColor"
+						},
+						{
+							"name": "surrogateKeyProductStream"
 						}
 					],
 					"scriptLines": [
@@ -3711,6 +3718,9 @@
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> selectColumnsCustomers",
 						"SelectColumns filter(!isNull(Color)) ~> filterNotNullValueColor",
+						"filterNotNullValueColor keyGenerate(output(ProductSerrugateKey as long),",
+						"     startAt: 1L,",
+						"     stepValue: 1L) ~> surrogateKeyProductStream",
 						"selectColumnsCustomers sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     input(",
@@ -3731,14 +3741,15 @@
 						"          CustomerID,",
 						"          CompanyName",
 						"     )) ~> DimCustomers",
-						"filterNotNullValueColor sink(allowSchemaDrift: true,",
+						"surrogateKeyProductStream sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     input(",
 						"          ProductID as integer,",
 						"          ProductNumber as string,",
 						"          Color as string,",
 						"          ProductCategoryID as integer,",
-						"          ProductCategoryName as string",
+						"          ProductCategoryName as string,",
+						"          ProductSerrugateKey as integer",
 						"     ),",
 						"     deletable:false,",
 						"     insertable:true,",
@@ -3755,7 +3766,8 @@
 						"          ProductNumber,",
 						"          Color,",
 						"          ProductCategoryID,",
-						"          ProductCategoryName",
+						"          ProductCategoryName,",
+						"          ProductSerrugateKey",
 						"     )) ~> sinkDimProduct"
 					]
 				}

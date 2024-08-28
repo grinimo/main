@@ -581,6 +581,10 @@
 					{
 						"name": "ProductCategoryName",
 						"type": "varchar"
+					},
+					{
+						"name": "ProductSerrugateKey",
+						"type": "int"
 					}
 				],
 				"typeProperties": {
