@@ -2033,7 +2033,7 @@
 				"schema": [
 					{
 						"name": "ProductSerrugateKey",
-						"type": "long",
+						"type": "int",
 						"precision": 10
 					},
 					{
@@ -3719,7 +3719,7 @@
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> selectColumnsCustomers",
 						"SelectColumns filter(!isNull(Color)) ~> filterNotNullValueColor",
-						"filterNotNullValueColor keyGenerate(output(ProductSerrugateKey as long),",
+						"filterNotNullValueColor keyGenerate(output(ProductSerrugateKey as integer),",
 						"     startAt: 1L,",
 						"     stepValue: 1L) ~> surrogateKeyProductStream",
 						"selectColumnsCustomers sink(allowSchemaDrift: true,",
@@ -3745,7 +3745,7 @@
 						"surrogateKeyProductStream sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     input(",
-						"          ProductSerrugateKey as any,",
+						"          ProductSerrugateKey as integer,",
 						"          ProductID as integer,",
 						"          ProductNumber as string,",
 						"          Color as string,",
