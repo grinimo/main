@@ -122,6 +122,10 @@
 		"TestParquet_linked service_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://dp203storageaccountt.dfs.core.windows.net/"
+		},
+		"05_pipeline_databricks_orchestration_key_vault_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://dp203-mykey-vault.vault.azure.net/"
 		}
 	},
 	"variables": {
@@ -622,54 +626,17 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/parent')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
+			"name": "[concat(parameters('factoryName'), '/05_pipeline_databricks_orchestration_key_vault')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"activities": [
-					{
-						"name": "Execute Pipeline1",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "child",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "Wait1",
-						"type": "Wait",
-						"dependsOn": [
-							{
-								"activity": "Execute Pipeline1",
-								"dependencyConditions": [
-									"Failed"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"waitTimeInSeconds": 1
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
 				"annotations": [],
-				"lastPublishTime": "2024-08-05T14:33:01Z"
+				"type": "AzureKeyVault",
+				"typeProperties": {
+					"baseUrl": "[parameters('05_pipeline_databricks_orchestration_key_vault_properties_typeProperties_baseUrl')]"
+				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/child')]"
-			]
+			"dependsOn": []
 		}
 	]
 }
