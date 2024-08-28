@@ -57,6 +57,9 @@
 				},
 				{
 					"name": "surrogateKeyProductStream"
+				},
+				{
+					"name": "surrogateKeyDimCustomer"
 				}
 			],
 			"scriptLines": [
@@ -139,9 +142,13 @@
 				"filterNotNullValueColor keyGenerate(output(ProductSerrugateKey as long),",
 				"     startAt: 1L,",
 				"     stepValue: 1L) ~> surrogateKeyProductStream",
-				"selectColumnsCustomers sink(allowSchemaDrift: true,",
+				"selectColumnsCustomers keyGenerate(output(CustomerSK as long),",
+				"     startAt: 1L,",
+				"     stepValue: 1L) ~> surrogateKeyDimCustomer",
+				"surrogateKeyDimCustomer sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
+				"          CustomerSK as integer,",
 				"          CustomerID as integer,",
 				"          CompanyName as string",
 				"     ),",
@@ -157,7 +164,8 @@
 				"     errorHandlingOption: 'stopOnFirstError',",
 				"     mapColumn(",
 				"          CustomerID,",
-				"          CompanyName",
+				"          CompanyName,",
+				"          CustomerSK",
 				"     )) ~> DimCustomers",
 				"surrogateKeyProductStream sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
