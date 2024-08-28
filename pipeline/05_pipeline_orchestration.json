@@ -39,6 +39,23 @@
 					"referenceName": "05_pipeline_databricks_linked_service",
 					"type": "LinkedServiceReference"
 				}
+			},
+			{
+				"name": "notebook using managed identity",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "05_pipeline_databricks_orechestration_managed_identity",
+					"type": "LinkedServiceReference"
+				}
 			}
 		],
 		"annotations": []
