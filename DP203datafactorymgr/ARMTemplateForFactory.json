@@ -791,7 +791,14 @@
 					{
 						"name": "01-data flow factSales",
 						"type": "ExecuteDataFlow",
-						"dependsOn": [],
+						"dependsOn": [
+							{
+								"activity": "Stored procedure1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"policy": {
 							"timeout": "0.12:00:00",
 							"retry": 0,
@@ -824,6 +831,26 @@
 							},
 							"traceLevel": "Fine"
 						}
+					},
+					{
+						"name": "Stored procedure1",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dbo].[ClearTableFactSales]"
+						},
+						"linkedServiceName": {
+							"referenceName": "04_pipeline_linked_service_workspaceSynapse_StoredProcedure",
+							"type": "LinkedServiceReference"
+						}
 					}
 				],
 				"policy": {
@@ -833,7 +860,8 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/dataflows/01_dataflow_warehouse')]",
-				"[concat(variables('factoryId'), '/linkedServices/02_pipeline_staging')]"
+				"[concat(variables('factoryId'), '/linkedServices/02_pipeline_staging')]",
+				"[concat(variables('factoryId'), '/linkedServices/04_pipeline_linked_service_workspaceSynapse_StoredProcedure')]"
 			]
 		},
 		{
