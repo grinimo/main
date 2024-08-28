@@ -19,6 +19,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of '02_pipeline_synpase_linked_service'"
 		},
+		"04_pipeline_linked_service_workspaceSynapse_StoredProcedure_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of '04_pipeline_linked_service_workspaceSynapse_StoredProcedure'"
+		},
 		"AdvantureWork_LS_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'AdvantureWork_LS'"
@@ -60,6 +64,18 @@
 			"defaultValue": "dp203DedicatedPool"
 		},
 		"02_pipeline_synpase_linked_service_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "sqladminuser"
+		},
+		"04_pipeline_linked_service_workspaceSynapse_StoredProcedure_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "dp203training001.sql.azuresynapse.net"
+		},
+		"04_pipeline_linked_service_workspaceSynapse_StoredProcedure_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "dp203DedicatedPool"
+		},
+		"04_pipeline_linked_service_workspaceSynapse_StoredProcedure_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "sqladminuser"
 		},
@@ -118,10 +134,6 @@
 		"GenericAzureSqlDB_LS_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "adminsql"
-		},
-		"Liked_Service_SAS_sasUri": {
-			"type": "secureString",
-			"metadata": "Secure string for 'sasUri' of 'Liked_Service_SAS'"
 		}
 	},
 	"variables": {
@@ -430,6 +442,28 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/04_pipeline_linked_service_workspaceSynapse_StoredProcedure')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDW",
+				"typeProperties": {
+					"server": "[parameters('04_pipeline_linked_service_workspaceSynapse_StoredProcedure_properties_typeProperties_server')]",
+					"database": "[parameters('04_pipeline_linked_service_workspaceSynapse_StoredProcedure_properties_typeProperties_database')]",
+					"encrypt": "mandatory",
+					"trustServerCertificate": false,
+					"authenticationType": "SQL",
+					"userName": "[parameters('04_pipeline_linked_service_workspaceSynapse_StoredProcedure_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('04_pipeline_linked_service_workspaceSynapse_StoredProcedure_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/05_pipeline_databricks_orchestration_key_vault')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -629,19 +663,6 @@
 						"type": "SecureString",
 						"value": "[parameters('GenericAzureSqlDB_LS_password')]"
 					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Liked_Service_SAS')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureBlobFS",
-				"typeProperties": {
-					"sasUri": "[parameters('Liked_Service_SAS_sasUri')]"
 				}
 			},
 			"dependsOn": []

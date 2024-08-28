@@ -19,6 +19,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of '02_pipeline_synpase_linked_service'"
 		},
+		"04_pipeline_linked_service_workspaceSynapse_StoredProcedure_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of '04_pipeline_linked_service_workspaceSynapse_StoredProcedure'"
+		},
 		"AdvantureWork_LS_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'AdvantureWork_LS'"
@@ -64,6 +68,18 @@
 			"defaultValue": "dp203DedicatedPool"
 		},
 		"02_pipeline_synpase_linked_service_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "sqladminuser"
+		},
+		"04_pipeline_linked_service_workspaceSynapse_StoredProcedure_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "dp203training001.sql.azuresynapse.net"
+		},
+		"04_pipeline_linked_service_workspaceSynapse_StoredProcedure_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "dp203DedicatedPool"
+		},
+		"04_pipeline_linked_service_workspaceSynapse_StoredProcedure_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "sqladminuser"
 		},
@@ -195,6 +211,9 @@
 					"02_pipeline_synpase_linked_service_password": {
 						"value": "[parameters('02_pipeline_synpase_linked_service_password')]"
 					},
+					"04_pipeline_linked_service_workspaceSynapse_StoredProcedure_password": {
+						"value": "[parameters('04_pipeline_linked_service_workspaceSynapse_StoredProcedure_password')]"
+					},
 					"AdvantureWork_LS_password": {
 						"value": "[parameters('AdvantureWork_LS_password')]"
 					},
@@ -227,6 +246,15 @@
 					},
 					"02_pipeline_synpase_linked_service_properties_typeProperties_userName": {
 						"value": "[parameters('02_pipeline_synpase_linked_service_properties_typeProperties_userName')]"
+					},
+					"04_pipeline_linked_service_workspaceSynapse_StoredProcedure_properties_typeProperties_server": {
+						"value": "[parameters('04_pipeline_linked_service_workspaceSynapse_StoredProcedure_properties_typeProperties_server')]"
+					},
+					"04_pipeline_linked_service_workspaceSynapse_StoredProcedure_properties_typeProperties_database": {
+						"value": "[parameters('04_pipeline_linked_service_workspaceSynapse_StoredProcedure_properties_typeProperties_database')]"
+					},
+					"04_pipeline_linked_service_workspaceSynapse_StoredProcedure_properties_typeProperties_userName": {
+						"value": "[parameters('04_pipeline_linked_service_workspaceSynapse_StoredProcedure_properties_typeProperties_userName')]"
 					},
 					"05_pipeline_databricks_orchestration_key_vault_properties_typeProperties_baseUrl": {
 						"value": "[parameters('05_pipeline_databricks_orchestration_key_vault_properties_typeProperties_baseUrl')]"
@@ -269,9 +297,6 @@
 					},
 					"GenericAzureSqlDB_LS_properties_typeProperties_userName": {
 						"value": "[parameters('GenericAzureSqlDB_LS_properties_typeProperties_userName')]"
-					},
-					"Liked_Service_SAS_sasUri": {
-						"value": "[parameters('Liked_Service_SAS_sasUri')]"
 					}
 				}
 			},
@@ -293,6 +318,9 @@
 					},
 					"TestParquet_linked service_accountKey": {
 						"value": "[parameters('TestParquet_linked service_accountKey')]"
+					},
+					"Liked_Service_SAS_sasUri": {
+						"value": "[parameters('Liked_Service_SAS_sasUri')]"
 					},
 					"TestParquet_linked service_properties_typeProperties_url": {
 						"value": "[parameters('TestParquet_linked service_properties_typeProperties_url')]"
@@ -342,6 +370,26 @@
 			},
 			"dependsOn": [
 				"[resourceId('Microsoft.Resources/deployments', 'DP203datafactorymgr_ArmTemplate_1')]"
+			]
+		},
+		{
+			"name": "DP203datafactorymgr_ArmTemplate_3",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_3.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'DP203datafactorymgr_ArmTemplate_2')]"
 			]
 		}
 	]
