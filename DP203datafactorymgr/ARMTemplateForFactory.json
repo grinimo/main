@@ -809,7 +809,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "01_dataflow_warehouse",
+								"referenceName": "01_dataflow_FactSales",
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
@@ -859,7 +859,7 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/01_dataflow_warehouse')]",
+				"[concat(variables('factoryId'), '/dataflows/01_dataflow_FactSales')]",
 				"[concat(variables('factoryId'), '/linkedServices/02_pipeline_staging')]",
 				"[concat(variables('factoryId'), '/linkedServices/04_pipeline_linked_service_workspaceSynapse_StoredProcedure')]"
 			]
@@ -3417,7 +3417,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/01_dataflow_warehouse')]",
+			"name": "[concat(parameters('factoryName'), '/01_dataflow_FactSales')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {

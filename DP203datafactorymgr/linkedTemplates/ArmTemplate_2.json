@@ -1541,7 +1541,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/01_dataflow_warehouse')]",
+			"name": "[concat(parameters('factoryName'), '/01_dataflow_FactSales')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -1911,7 +1911,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "01_dataflow_warehouse",
+								"referenceName": "01_dataflow_FactSales",
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
@@ -1961,7 +1961,7 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/01_dataflow_warehouse')]"
+				"[concat(variables('factoryId'), '/dataflows/01_dataflow_FactSales')]"
 			]
 		}
 	]
