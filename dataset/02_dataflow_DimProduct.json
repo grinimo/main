@@ -10,7 +10,7 @@
 		"schema": [
 			{
 				"name": "ProductSerrugateKey",
-				"type": "long",
+				"type": "int",
 				"precision": 10
 			},
 			{
