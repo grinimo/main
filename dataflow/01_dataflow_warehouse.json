@@ -34,6 +34,9 @@
 				},
 				{
 					"name": "selectColumn"
+				},
+				{
+					"name": "derivedColumnTotalDue"
 				}
 			],
 			"scriptLines": [
@@ -92,7 +95,6 @@
 				"          SubTotal,",
 				"          TaxAmt,",
 				"          Freight,",
-				"          TotalDue,",
 				"          SalesOrderID = SalesOrdersDetails@SalesOrderID,",
 				"          OrderQty,",
 				"          ProductID,",
@@ -102,7 +104,8 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> selectColumn",
-				"selectColumn sink(allowSchemaDrift: true,",
+				"selectColumn derive(TotalDue = add(add(SubTotal,TaxAmt),Freight)) ~> derivedColumnTotalDue",
+				"derivedColumnTotalDue sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
 				"          SalesOrderID as integer,",
