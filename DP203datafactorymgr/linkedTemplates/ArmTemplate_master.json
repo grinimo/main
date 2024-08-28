@@ -216,9 +216,6 @@
 					"GenericAzureSqlDB_LS_password": {
 						"value": "[parameters('GenericAzureSqlDB_LS_password')]"
 					},
-					"TestParquet_linked service_accountKey": {
-						"value": "[parameters('TestParquet_linked service_accountKey')]"
-					},
 					"02_pipeline_staging_properties_typeProperties_url": {
 						"value": "[parameters('02_pipeline_staging_properties_typeProperties_url')]"
 					},
@@ -275,9 +272,6 @@
 					},
 					"Liked_Service_SAS_sasUri": {
 						"value": "[parameters('Liked_Service_SAS_sasUri')]"
-					},
-					"TestParquet_linked service_properties_typeProperties_url": {
-						"value": "[parameters('TestParquet_linked service_properties_typeProperties_url')]"
 					}
 				}
 			},
@@ -296,6 +290,12 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"TestParquet_linked service_accountKey": {
+						"value": "[parameters('TestParquet_linked service_accountKey')]"
+					},
+					"TestParquet_linked service_properties_typeProperties_url": {
+						"value": "[parameters('TestParquet_linked service_properties_typeProperties_url')]"
 					}
 				}
 			},

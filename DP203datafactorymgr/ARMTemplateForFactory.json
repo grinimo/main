@@ -959,6 +959,58 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/06-pipeline_orchestration_using_managed_identity')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Wait1",
+						"type": "Wait",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"waitTimeInSeconds": 1
+						}
+					},
+					{
+						"name": "managed identity using job cluster without interacting",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "Wait1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Users/mohamed.grini@aosis.net/orchestrationSample"
+						},
+						"linkedServiceName": {
+							"referenceName": "06_pipeline_job_cluster_linked_service",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/06_pipeline_job_cluster_linked_service')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DEMO pipeline1')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -2870,6 +2922,26 @@
 					"authentication": "MSI",
 					"workspaceResourceId": "/subscriptions/f00081c2-4f6c-4b2b-927b-02b4f7ddd4a0/resourceGroups/POC-Databricks-E2E/providers/Microsoft.Databricks/workspaces/databricksPremium",
 					"existingClusterId": "[parameters('05_pipeline_databricks_orechestration_managed_identity_properties_typeProperties_existingClusterId')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/06_pipeline_job_cluster_linked_service')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureDatabricks",
+				"typeProperties": {
+					"domain": "https://adb-7020639691561392.12.azuredatabricks.net",
+					"authentication": "MSI",
+					"workspaceResourceId": "/subscriptions/f00081c2-4f6c-4b2b-927b-02b4f7ddd4a0/resourceGroups/POC-Databricks-E2E/providers/Microsoft.Databricks/workspaces/databricksPremium",
+					"newClusterNodeType": "Standard_DS3_v2",
+					"newClusterNumOfWorker": "1",
+					"newClusterVersion": "10.4.x-scala2.12",
+					"clusterOption": "Fixed",
+					"newClusterInitScripts": []
 				}
 			},
 			"dependsOn": []
