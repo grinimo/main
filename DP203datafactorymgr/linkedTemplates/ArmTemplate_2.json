@@ -1862,7 +1862,7 @@
 						"surrogateKeyProductStream sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     input(",
-						"          ProductSerrugateKey as integer,",
+						"          ProductSK as integer,",
 						"          ProductID as integer,",
 						"          ProductNumber as string,",
 						"          Color as string,",
@@ -1885,7 +1885,7 @@
 						"          Color,",
 						"          ProductCategoryID,",
 						"          ProductCategoryName,",
-						"          ProductSerrugateKey",
+						"          ProductSK = ProductSerrugateKey",
 						"     )) ~> sinkDimProduct"
 					]
 				}

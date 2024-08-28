@@ -561,7 +561,7 @@
 				"type": "AzureSqlDWTable",
 				"schema": [
 					{
-						"name": "ProductSerrugateKey",
+						"name": "ProductSK",
 						"type": "int",
 						"precision": 10
 					},
