@@ -3719,7 +3719,7 @@
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> selectColumnsCustomers",
 						"SelectColumns filter(!isNull(Color)) ~> filterNotNullValueColor",
-						"filterNotNullValueColor keyGenerate(output(ProductSerrugateKey as integer),",
+						"filterNotNullValueColor keyGenerate(output(ProductSerrugateKey as long),",
 						"     startAt: 1L,",
 						"     stepValue: 1L) ~> surrogateKeyProductStream",
 						"selectColumnsCustomers sink(allowSchemaDrift: true,",
