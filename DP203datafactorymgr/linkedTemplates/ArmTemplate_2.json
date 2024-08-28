@@ -1081,7 +1081,7 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"notebookPath": "/Users/mohamed.grini@aosis.net"
+							"notebookPath": "/Users/mohamed.grini@aosis.net/orchestrationSample"
 						},
 						"linkedServiceName": {
 							"referenceName": "05_pipeline_databricks_orechestration_managed_identity",
