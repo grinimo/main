@@ -50,6 +50,12 @@
 		"02_pipeline_synpase_linked_service_properties_typeProperties_userName": {
 			"value": "sqladminuser"
 		},
+		"05_pipeline_databricks_linked_service_properties_typeProperties_existingClusterId": {
+			"value": "0821-103528-5o629451"
+		},
+		"05_pipeline_databricks_orchestration_key_vault_properties_typeProperties_baseUrl": {
+			"value": "https://dp203-mykey-vault.vault.azure.net/"
+		},
 		"AdvantureWork_LS_properties_typeProperties_server": {
 			"value": "dp203databaseservertraining.database.windows.net"
 		},
@@ -109,12 +115,6 @@
 		},
 		"trigger1TumblingWindows_properties_pipeline_parameters_WindowsEnd": {
 			"value": "@trigger().outputs.windowEndTime\n"
-		},
-		"05_pipeline_databricks_orchestration_key_vault_properties_typeProperties_baseUrl": {
-			"value": "https://dp203-mykey-vault.vault.azure.net/"
-		},
-		"05_pipeline_databricks_linked_service_properties_typeProperties_existingClusterId": {
-			"value": "0821-103528-5o629451"
 		},
 		"containerUri": {
 			"value": ""

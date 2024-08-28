@@ -67,6 +67,14 @@
 			"type": "string",
 			"defaultValue": "sqladminuser"
 		},
+		"05_pipeline_databricks_linked_service_properties_typeProperties_existingClusterId": {
+			"type": "string",
+			"defaultValue": "0821-103528-5o629451"
+		},
+		"05_pipeline_databricks_orchestration_key_vault_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://dp203-mykey-vault.vault.azure.net/"
+		},
 		"AdvantureWork_LS_properties_typeProperties_server": {
 			"type": "string",
 			"defaultValue": "dp203databaseservertraining.database.windows.net"
@@ -147,14 +155,6 @@
 			"type": "string",
 			"defaultValue": "@trigger().outputs.windowEndTime\n"
 		},
-		"05_pipeline_databricks_orchestration_key_vault_properties_typeProperties_baseUrl": {
-			"type": "string",
-			"defaultValue": "https://dp203-mykey-vault.vault.azure.net/"
-		},
-		"05_pipeline_databricks_linked_service_properties_typeProperties_existingClusterId": {
-			"type": "string",
-			"defaultValue": "0821-103528-5o629451"
-		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -227,6 +227,9 @@
 					"02_pipeline_synpase_linked_service_properties_typeProperties_userName": {
 						"value": "[parameters('02_pipeline_synpase_linked_service_properties_typeProperties_userName')]"
 					},
+					"05_pipeline_databricks_orchestration_key_vault_properties_typeProperties_baseUrl": {
+						"value": "[parameters('05_pipeline_databricks_orchestration_key_vault_properties_typeProperties_baseUrl')]"
+					},
 					"AdvantureWork_LS_properties_typeProperties_server": {
 						"value": "[parameters('AdvantureWork_LS_properties_typeProperties_server')]"
 					},
@@ -268,9 +271,6 @@
 					},
 					"TestParquet_linked service_properties_typeProperties_url": {
 						"value": "[parameters('TestParquet_linked service_properties_typeProperties_url')]"
-					},
-					"05_pipeline_databricks_orchestration_key_vault_properties_typeProperties_baseUrl": {
-						"value": "[parameters('05_pipeline_databricks_orchestration_key_vault_properties_typeProperties_baseUrl')]"
 					}
 				}
 			},
@@ -310,6 +310,9 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"05_pipeline_databricks_linked_service_properties_typeProperties_existingClusterId": {
+						"value": "[parameters('05_pipeline_databricks_linked_service_properties_typeProperties_existingClusterId')]"
+					},
 					"FileUplodedTrigger_properties_Demon_pipeline_Storage_event_parameters_FileName": {
 						"value": "[parameters('FileUplodedTrigger_properties_Demon_pipeline_Storage_event_parameters_FileName')]"
 					},
@@ -327,9 +330,6 @@
 					},
 					"trigger1TumblingWindows_properties_pipeline_parameters_WindowsEnd": {
 						"value": "[parameters('trigger1TumblingWindows_properties_pipeline_parameters_WindowsEnd')]"
-					},
-					"05_pipeline_databricks_linked_service_properties_typeProperties_existingClusterId": {
-						"value": "[parameters('05_pipeline_databricks_linked_service_properties_typeProperties_existingClusterId')]"
 					}
 				}
 			},

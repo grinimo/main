@@ -7,6 +7,10 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "DP203datafactorymgr"
 		},
+		"05_pipeline_databricks_linked_service_properties_typeProperties_existingClusterId": {
+			"type": "string",
+			"defaultValue": "0821-103528-5o629451"
+		},
 		"FileUplodedTrigger_properties_Demon_pipeline_Storage_event_parameters_FileName": {
 			"type": "string",
 			"defaultValue": "@triggerBody().fileName"
@@ -30,10 +34,6 @@
 		"trigger1TumblingWindows_properties_pipeline_parameters_WindowsEnd": {
 			"type": "string",
 			"defaultValue": "@trigger().outputs.windowEndTime\n"
-		},
-		"05_pipeline_databricks_linked_service_properties_typeProperties_existingClusterId": {
-			"type": "string",
-			"defaultValue": "0821-103528-5o629451"
 		}
 	},
 	"variables": {
@@ -195,6 +195,28 @@
 				"typeProperties": {
 					"schema": "dbo",
 					"table": "factSales"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/05_pipeline_databricks_linked_service')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureDatabricks",
+				"typeProperties": {
+					"domain": "https://adb-7020639691561392.12.azuredatabricks.net",
+					"accessToken": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "05_pipeline_databricks_orchestration_key_vault",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "dp203-personnalAcessTokenDatabricks"
+					},
+					"existingClusterId": "[parameters('05_pipeline_databricks_linked_service_properties_typeProperties_existingClusterId')]"
 				}
 			},
 			"dependsOn": []
@@ -372,28 +394,6 @@
 						"intervalInSeconds": 30
 					},
 					"dependsOn": []
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/05_pipeline_databricks_linked_service')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureDatabricks",
-				"typeProperties": {
-					"domain": "https://adb-7020639691561392.12.azuredatabricks.net",
-					"accessToken": {
-						"type": "AzureKeyVaultSecret",
-						"store": {
-							"referenceName": "05_pipeline_databricks_orchestration_key_vault",
-							"type": "LinkedServiceReference"
-						},
-						"secretName": "dp203-personnalAcessTokenDatabricks"
-					},
-					"existingClusterId": "[parameters('05_pipeline_databricks_linked_service_properties_typeProperties_existingClusterId')]"
 				}
 			},
 			"dependsOn": []
@@ -994,6 +994,60 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/05_pipeline_orchestration')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Wait1",
+						"type": "Wait",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"waitTimeInSeconds": 1
+						}
+					},
+					{
+						"name": "execute our sample notebook",
+						"type": "DatabricksNotebook",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
+						"dependsOn": [
+							{
+								"activity": "Wait1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Users/mohamed.grini@aosis.net/orchestrationSample"
+						},
+						"linkedServiceName": {
+							"referenceName": "05_pipeline_databricks_linked_service",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/05_pipeline_databricks_linked_service')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DEMO pipeline1')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -1564,58 +1618,6 @@
 				}
 			},
 			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/05_pipeline_orchestration')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Wait1",
-						"type": "Wait",
-						"dependsOn": [],
-						"userProperties": [],
-						"typeProperties": {
-							"waitTimeInSeconds": 1
-						}
-					},
-					{
-						"name": "execute our sample notebook",
-						"type": "DatabricksNotebook",
-						"dependsOn": [
-							{
-								"activity": "Wait1",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": "/Users/mohamed.grini@aosis.net/orchestrationSample"
-						},
-						"linkedServiceName": {
-							"referenceName": "05_pipeline_databricks_linked_service",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/05_pipeline_databricks_linked_service')]"
-			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/03-pipeline-mapping data flow FctSales')]",

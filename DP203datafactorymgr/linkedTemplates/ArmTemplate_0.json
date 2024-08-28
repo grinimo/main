@@ -67,6 +67,10 @@
 			"type": "string",
 			"defaultValue": "sqladminuser"
 		},
+		"05_pipeline_databricks_orchestration_key_vault_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://dp203-mykey-vault.vault.azure.net/"
+		},
 		"AdvantureWork_LS_properties_typeProperties_server": {
 			"type": "string",
 			"defaultValue": "dp203databaseservertraining.database.windows.net"
@@ -122,10 +126,6 @@
 		"TestParquet_linked service_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://dp203storageaccountt.dfs.core.windows.net/"
-		},
-		"05_pipeline_databricks_orchestration_key_vault_properties_typeProperties_baseUrl": {
-			"type": "string",
-			"defaultValue": "https://dp203-mykey-vault.vault.azure.net/"
 		}
 	},
 	"variables": {
@@ -434,6 +434,19 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/05_pipeline_databricks_orchestration_key_vault')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureKeyVault",
+				"typeProperties": {
+					"baseUrl": "[parameters('05_pipeline_databricks_orchestration_key_vault_properties_typeProperties_baseUrl')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/AdvantureWork_LS')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -623,19 +636,6 @@
 			"type": "Microsoft.DataFactory/factories/managedVirtualNetworks",
 			"apiVersion": "2018-06-01",
 			"properties": {},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/05_pipeline_databricks_orchestration_key_vault')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureKeyVault",
-				"typeProperties": {
-					"baseUrl": "[parameters('05_pipeline_databricks_orchestration_key_vault_properties_typeProperties_baseUrl')]"
-				}
-			},
 			"dependsOn": []
 		}
 	]
