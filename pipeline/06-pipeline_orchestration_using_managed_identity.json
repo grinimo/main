@@ -31,7 +31,10 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Users/mohamed.grini@aosis.net/orchestrationSample"
+					"notebookPath": "/Users/mohamed.grini@aosis.net/orchestrationSample",
+					"baseParameters": {
+						"mytest": "Hello world from ADF!"
+					}
 				},
 				"linkedServiceName": {
 					"referenceName": "06_pipeline_job_cluster_linked_service",
