@@ -1296,6 +1296,47 @@
 								"parameters": {}
 							}
 						]
+					},
+					{
+						"name": "DeleteJsonFileindatalake",
+						"type": "Delete",
+						"dependsOn": [
+							{
+								"activity": "Copy json to dedicated Pool",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "03_dataflow_jsonFile",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"logStorageSettings": {
+								"linkedServiceName": {
+									"referenceName": "02_pipeline_staging",
+									"type": "LinkedServiceReference"
+								},
+								"path": "data/LoggingforDetelteActivity"
+							},
+							"enableLogging": true,
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"wildcardFileName": "*.json",
+								"enablePartitionDiscovery": false
+							}
+						}
 					}
 				],
 				"policy": {
