@@ -1,5 +1,5 @@
 {
-	"name": "04_dataflow_Json_To_CustomerCourse",
+	"name": "05_dataflowJsonColumnObject",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "DedicatedSql Pool copy csv from adf",

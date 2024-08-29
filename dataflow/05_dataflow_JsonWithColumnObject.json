@@ -1,29 +1,29 @@
 {
-	"name": "04-dataflow_jsonWithArrayColumn",
+	"name": "05_dataflow_JsonWithColumnObject",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "04dataflow_JsonCutomer",
+						"referenceName": "05_dataflow_JsonObject",
 						"type": "DatasetReference"
 					},
-					"name": "sourceCustomeJson"
+					"name": "SourceJsonObject"
 				}
 			],
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "04_dataflow_Json_To_CustomerCourse",
+						"referenceName": "05_dataflowJsonColumnObject",
 						"type": "DatasetReference"
 					},
-					"name": "sinkCustomerDedicatedPool"
+					"name": "sinkJsonObject"
 				}
 			],
 			"transformations": [
 				{
-					"name": "flattenCustomerJsonArrays"
+					"name": "flattenJsonObject"
 				}
 			],
 			"scriptLines": [
@@ -31,22 +31,24 @@
 				"          customerid as integer,",
 				"          customername as string,",
 				"          registered as boolean,",
-				"          courses as string[]",
+				"          courses as string[],",
+				"          details as (mobile as string, city as string)",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
-				"     documentForm: 'arrayOfDocuments') ~> sourceCustomeJson",
-				"sourceCustomeJson foldDown(unroll(courses, courses),",
+				"     documentForm: 'arrayOfDocuments') ~> SourceJsonObject",
+				"SourceJsonObject foldDown(unroll(courses, courses),",
 				"     mapColumn(",
 				"          customerid,",
 				"          customername,",
 				"          registered,",
-				"          courses",
+				"          courses,",
+				"          details",
 				"     ),",
 				"     skipDuplicateMapInputs: false,",
-				"     skipDuplicateMapOutputs: false) ~> flattenCustomerJsonArrays",
-				"flattenCustomerJsonArrays sink(allowSchemaDrift: true,",
+				"     skipDuplicateMapOutputs: false) ~> flattenJsonObject",
+				"flattenJsonObject sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
 				"          CustomerID as integer,",
@@ -70,8 +72,10 @@
 				"          CustomerID = customerid,",
 				"          CustomerName = customername,",
 				"          Registered = registered,",
-				"          Courses = courses",
-				"     )) ~> sinkCustomerDedicatedPool"
+				"          Courses = courses,",
+				"          Mobile = details.mobile,",
+				"          City = details.city",
+				"     )) ~> sinkJsonObject"
 			]
 		}
 	}
