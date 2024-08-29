@@ -6,7 +6,7 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "Customer_csv_DS",
+						"referenceName": "SourceDataset_o30",
 						"type": "DatasetReference"
 					},
 					"name": "SourceJsonFile"
@@ -24,21 +24,17 @@
 			"transformations": [],
 			"scriptLines": [
 				"source(output(",
-				"          CustomerID as string,",
-				"          NameStyle as string,",
-				"          Title as string,",
-				"          FirstName as string,",
-				"          MiddleName as string,",
-				"          LastName as string,",
-				"          Suffix as string,",
-				"          CompanyName as string,",
-				"          SalesPerson as string,",
-				"          EmailAddress as string,",
-				"          Phone as string,",
-				"          PasswordHash as string,",
-				"          PasswordSalt as string,",
-				"          rowguid as string,",
-				"          ModifiedDate as string",
+				"          Correlationid as string,",
+				"          Operationname as string,",
+				"          Status as string,",
+				"          Eventcategory as string,",
+				"          Level as string,",
+				"          Time as string,",
+				"          Subscription as string,",
+				"          Eventinitiatedby as string,",
+				"          Resourcetype as string,",
+				"          Resourcegroup as string,",
+				"          Resource as string",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
