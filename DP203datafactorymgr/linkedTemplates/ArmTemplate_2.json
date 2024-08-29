@@ -1724,6 +1724,13 @@
 								"type": "DatasetReference"
 							},
 							"name": "Customer"
+						},
+						{
+							"dataset": {
+								"referenceName": "02_dataflow_dimCustomer",
+								"type": "DatasetReference"
+							},
+							"name": "MaxDimCustomer"
 						}
 					],
 					"sinks": [
@@ -1740,6 +1747,9 @@
 								"type": "DatasetReference"
 							},
 							"name": "sinkDimProduct"
+						},
+						{
+							"name": "CchesinkCustomerSK"
 						}
 					],
 					"transformations": [
@@ -1760,6 +1770,9 @@
 						},
 						{
 							"name": "surrogateKeyDimCustomer"
+						},
+						{
+							"name": "derivedColumnCustomerSK"
 						}
 					],
 					"scriptLines": [
@@ -1819,6 +1832,15 @@
 						"     isolationLevel: 'READ_UNCOMMITTED',",
 						"     query: 'SELECT * FROM [SalesLT].[Customer]\\nWHERE CustomerID<=4000',",
 						"     format: 'query') ~> Customer",
+						"source(output(",
+						"          MaxCustomerSK as integer",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     query: 'SELECT  MAX(CustomerSK) AS \\'MaxCustomerSK\\'\\n FROM [dbo].[dimCustomer]',",
+						"     format: 'query',",
+						"     staged: true) ~> MaxDimCustomer",
 						"Product, ProductCategory join(Product@ProductCategoryID == ProductCategory@ProductCategoryID,",
 						"     joinType:'inner',",
 						"     matchType:'exact',",
@@ -1846,7 +1868,8 @@
 						"selectColumnsCustomers keyGenerate(output(CustomerSK as long),",
 						"     startAt: 1L,",
 						"     stepValue: 1L) ~> surrogateKeyDimCustomer",
-						"surrogateKeyDimCustomer sink(allowSchemaDrift: true,",
+						"surrogateKeyDimCustomer derive(CustomerSK = add(CustomerSK,CchesinkCustomerSK#outputs()[1].MaxCustomerSK)) ~> derivedColumnCustomerSK",
+						"derivedColumnCustomerSK sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     input(",
 						"          CustomerSK as integer,",
@@ -1895,7 +1918,14 @@
 						"          ProductCategoryID,",
 						"          ProductCategoryName,",
 						"          ProductSK = ProductSerrugateKey",
-						"     )) ~> sinkDimProduct"
+						"     )) ~> sinkDimProduct",
+						"MaxDimCustomer sink(validateSchema: false,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     store: 'cache',",
+						"     format: 'inline',",
+						"     output: false,",
+						"     saveOrder: 1) ~> CchesinkCustomerSK"
 					]
 				}
 			},
