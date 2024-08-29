@@ -786,10 +786,10 @@
 						"     skipDuplicateMapOutputs: true,",
 						"     errorHandlingOption: 'stopOnFirstError',",
 						"     mapColumn(",
-						"          customerid,",
-						"          customername,",
-						"          registered,",
-						"          courses",
+						"          CustomerID = customerid,",
+						"          CustomerName = customername,",
+						"          Registered = registered,",
+						"          Courses = courses",
 						"     )) ~> sinkCustomerDedicatedPool"
 					]
 				}

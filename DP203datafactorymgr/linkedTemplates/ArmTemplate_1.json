@@ -888,7 +888,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "02_pipeline_synpase_linked_service",
+					"referenceName": "DedicatedSql Pool copy csv from adf",
 					"type": "LinkedServiceReference"
 				},
 				"annotations": [],
