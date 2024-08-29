@@ -47,6 +47,9 @@
 						"type": "DatasetReference"
 					},
 					"name": "sinkDimProduct"
+				},
+				{
+					"name": "CchesinkCustomerSK"
 				}
 			],
 			"transformations": [
@@ -67,6 +70,9 @@
 				},
 				{
 					"name": "surrogateKeyDimCustomer"
+				},
+				{
+					"name": "derivedColumnCustomerSK"
 				}
 			],
 			"scriptLines": [
@@ -142,8 +148,8 @@
 				"          ProductID,",
 				"          ProductNumber,",
 				"          Color,",
-				"          ProductCategoryID = Product@ProductCategoryID,",
-				"          ProductCategoryName = Product@Name",
+				"          ProductCategoryID = {Product@ProductCategoryID},",
+				"          ProductCategoryName = {Product@Name}",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> SelectColumns",
@@ -160,7 +166,8 @@
 				"selectColumnsCustomers keyGenerate(output(CustomerSK as long),",
 				"     startAt: 1L,",
 				"     stepValue: 1L) ~> surrogateKeyDimCustomer",
-				"surrogateKeyDimCustomer sink(allowSchemaDrift: true,",
+				"surrogateKeyDimCustomer derive(CustomerSK = add(CustomerSK,CchesinkCustomerSK#outputs()[1].MaxCustomerSK)) ~> derivedColumnCustomerSK",
+				"derivedColumnCustomerSK sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
 				"          CustomerSK as integer,",
@@ -209,7 +216,14 @@
 				"          ProductCategoryID,",
 				"          ProductCategoryName,",
 				"          ProductSK = ProductSerrugateKey",
-				"     )) ~> sinkDimProduct"
+				"     )) ~> sinkDimProduct",
+				"MaxDimCustomer sink(validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     store: 'cache',",
+				"     format: 'inline',",
+				"     output: false,",
+				"     saveOrder: 1) ~> CchesinkCustomerSK"
 			]
 		}
 	}
