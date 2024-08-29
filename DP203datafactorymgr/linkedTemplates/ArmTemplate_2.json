@@ -41,6 +41,53 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/Generic_ADLSg2CSV_DS')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage_LS",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"ServerName": {
+						"type": "string"
+					},
+					"DabaseName": {
+						"type": "string"
+					},
+					"SchemaName": {
+						"type": "string"
+					},
+					"TableName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@concat(dataset().SchemaName, '_',dataset().tableName, '.csv')",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@concat(\n    dataset().ServerName,\n    '/',\n    dataset().DabaseName,\n    '/',\n    dataset().TableName,\n    '/Year=',\n    formatDateTime(utcnow(),'yyyy'),\n    '/Month=',\n    formatDateTime(utcnow(),'MM'),\n    '/Day=',\n    formatDateTime(utcnow(),'dd')\n)\n\n\n",
+							"type": "Expression"
+						},
+						"fileSystem": "raw"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Generic_azure_dataset')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -111,6 +158,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
+						"fileName": "ActivityLog01.csv",
 						"folderPath": "csv",
 						"fileSystem": "data"
 					},
@@ -1596,163 +1644,8 @@
 				"lastPublishTime": "2024-07-31T15:03:47Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/Generic_azure_dataset')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/01_dataflow_FactSales')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "01_dataflow_tableSQL_SalesOederHeader",
-								"type": "DatasetReference"
-							},
-							"name": "SalesOrderHeaderStream"
-						},
-						{
-							"dataset": {
-								"referenceName": "01_dataflow_SalesOrdersDetails",
-								"type": "DatasetReference"
-							},
-							"name": "SalesOrdersDetails"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "copy_parquet_to_dedicated_SQL_Pool",
-								"type": "DatasetReference"
-							},
-							"name": "FactSalesStream"
-						}
-					],
-					"transformations": [
-						{
-							"name": "SalesOrderHeaderJoinSalesOrderDetails"
-						},
-						{
-							"name": "selectColumn"
-						},
-						{
-							"name": "derivedColumnTotalDue"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          SalesOrderID as integer,",
-						"          RevisionNumber as integer,",
-						"          OrderDate as timestamp,",
-						"          DueDate as timestamp,",
-						"          ShipDate as timestamp,",
-						"          Status as integer,",
-						"          OnlineOrderFlag as boolean,",
-						"          SalesOrderNumber as string,",
-						"          PurchaseOrderNumber as string,",
-						"          AccountNumber as string,",
-						"          CustomerID as integer,",
-						"          ShipToAddressID as integer,",
-						"          BillToAddressID as integer,",
-						"          ShipMethod as string,",
-						"          CreditCardApprovalCode as string,",
-						"          SubTotal as decimal(19,4),",
-						"          TaxAmt as decimal(19,4),",
-						"          Freight as decimal(19,4),",
-						"          TotalDue as decimal(19,4),",
-						"          Comment as string,",
-						"          rowguid as string,",
-						"          ModifiedDate as timestamp",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     isolationLevel: 'READ_UNCOMMITTED',",
-						"     format: 'table') ~> SalesOrderHeaderStream",
-						"source(output(",
-						"          SalesOrderID as integer,",
-						"          SalesOrderDetailID as integer,",
-						"          OrderQty as integer,",
-						"          ProductID as integer,",
-						"          UnitPrice as decimal(19,4),",
-						"          UnitPriceDiscount as decimal(19,4),",
-						"          LineTotal as decimal(38,6),",
-						"          rowguid as string,",
-						"          ModifiedDate as timestamp",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     isolationLevel: 'READ_UNCOMMITTED',",
-						"     format: 'table') ~> SalesOrdersDetails",
-						"SalesOrderHeaderStream, SalesOrdersDetails join(SalesOrderHeaderStream@SalesOrderID == SalesOrderDetailID,",
-						"     joinType:'inner',",
-						"     matchType:'exact',",
-						"     ignoreSpaces: false,",
-						"     broadcast: 'auto')~> SalesOrderHeaderJoinSalesOrderDetails",
-						"SalesOrderHeaderJoinSalesOrderDetails select(mapColumn(",
-						"          SalesOrderID = SalesOrderHeaderStream@SalesOrderID,",
-						"          OrderDate,",
-						"          CustomerID,",
-						"          SubTotal,",
-						"          TaxAmt,",
-						"          Freight,",
-						"          SalesOrderID = SalesOrdersDetails@SalesOrderID,",
-						"          OrderQty,",
-						"          ProductID,",
-						"          UnitPrice,",
-						"          UnitPriceDiscount,",
-						"          LineTotal",
-						"     ),",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> selectColumn",
-						"selectColumn derive(TotalDue = add(add(SubTotal,TaxAmt),Freight)) ~> derivedColumnTotalDue",
-						"derivedColumnTotalDue sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     input(",
-						"          SalesOrderID as integer,",
-						"          OrderDate as timestamp,",
-						"          CustomerID as integer,",
-						"          SubTotal as decimal(19,4),",
-						"          TaxAmt as decimal(19,4),",
-						"          Freight as decimal(19,4),",
-						"          TotalDue as decimal(19,4),",
-						"          OrderQty as integer,",
-						"          ProductID as integer,",
-						"          UnitPrice as decimal(19,4),",
-						"          UnitPriceDiscount as decimal(19,4),",
-						"          LineTotal as decimal(18,0)",
-						"     ),",
-						"     deletable:false,",
-						"     insertable:true,",
-						"     updateable:false,",
-						"     upsertable:false,",
-						"     format: 'table',",
-						"     staged: true,",
-						"     allowCopyCommand: true,",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     errorHandlingOption: 'stopOnFirstError',",
-						"     mapColumn(",
-						"          SalesOrderID,",
-						"          OrderDate,",
-						"          CustomerID,",
-						"          SubTotal,",
-						"          TaxAmt,",
-						"          Freight,",
-						"          TotalDue,",
-						"          OrderQty,",
-						"          ProductID,",
-						"          UnitPrice,",
-						"          UnitPriceDiscount,",
-						"          LineTotal",
-						"     )) ~> FactSalesStream"
-					]
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/copy_parquet_to_dedicated_SQL_Pool')]"
+				"[concat(variables('factoryId'), '/datasets/Generic_azure_dataset')]",
+				"[concat(variables('factoryId'), '/datasets/Generic_ADLSg2CSV_DS')]"
 			]
 		}
 	]
