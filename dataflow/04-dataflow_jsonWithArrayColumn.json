@@ -1,0 +1,70 @@
+{
+	"name": "04-dataflow_jsonWithArrayColumn",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "04dataflow_JsonCutomer",
+						"type": "DatasetReference"
+					},
+					"name": "sourceCustomeJson"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "04_dataflow_Json_To_CustomerCourse",
+						"type": "DatasetReference"
+					},
+					"name": "sinkCustomerDedicatedPool"
+				}
+			],
+			"transformations": [
+				{
+					"name": "flattenCustomerJsonArrays"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          customerid as integer,",
+				"          customername as string,",
+				"          registered as boolean,",
+				"          courses as string[]",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'arrayOfDocuments') ~> sourceCustomeJson",
+				"sourceCustomeJson foldDown(unroll(courses, courses),",
+				"     mapColumn(",
+				"          customerid,",
+				"          customername,",
+				"          registered,",
+				"          courses",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flattenCustomerJsonArrays",
+				"flattenCustomerJsonArrays sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     staged: true,",
+				"     allowCopyCommand: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          customerid,",
+				"          customername,",
+				"          registered,",
+				"          courses",
+				"     )) ~> sinkCustomerDedicatedPool"
+			]
+		}
+	}
+}
