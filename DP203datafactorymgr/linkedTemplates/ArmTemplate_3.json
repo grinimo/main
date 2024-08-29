@@ -13,6 +13,272 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/02-pipeline copy table to dedicated pool')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "copy table sql to dedicated Pool",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": "SELECT \nhd.[SalesOrderID],hd.[OrderDate],hd.[CustomerID],hd.[SubTotal],hd.[TaxAmt],hd.[Freight],hd.[TotalDue],\ndt.[OrderQty],dt.[ProductID],dt.[UnitPrice],dt.[UnitPriceDiscount],dt.[LineTotal]\nFROM [SalesLT].[SalesOrderHeader] hd INNER JOIN [SalesLT].[SalesOrderDetail] dt\nON hd.[SalesOrderID]=dt.[SalesOrderID]",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "SqlDWSink",
+								"allowCopyCommand": true,
+								"copyCommandSettings": {}
+							},
+							"enableStaging": true,
+							"stagingSettings": {
+								"linkedServiceName": {
+									"referenceName": "02_pipeline_staging",
+									"type": "LinkedServiceReference"
+								},
+								"path": "data/staging"
+							},
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "SalesOrderID",
+											"type": "Int32"
+										},
+										"sink": {
+											"name": "SalesOrderID",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "OrderDate",
+											"type": "DateTime"
+										},
+										"sink": {
+											"name": "OrderDate",
+											"type": "DateTime"
+										}
+									},
+									{
+										"source": {
+											"name": "CustomerID",
+											"type": "Int32"
+										},
+										"sink": {
+											"name": "CustomerID",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "SubTotal",
+											"type": "Decimal"
+										},
+										"sink": {
+											"name": "SubTotal",
+											"type": "Decimal"
+										}
+									},
+									{
+										"source": {
+											"name": "TaxAmt",
+											"type": "Decimal"
+										},
+										"sink": {
+											"name": "TaxAmt",
+											"type": "Decimal"
+										}
+									},
+									{
+										"source": {
+											"name": "Freight",
+											"type": "Decimal"
+										},
+										"sink": {
+											"name": "Freight",
+											"type": "Decimal"
+										}
+									},
+									{
+										"source": {
+											"name": "TotalDue",
+											"type": "Decimal"
+										},
+										"sink": {
+											"name": "TotalDue",
+											"type": "Decimal"
+										}
+									},
+									{
+										"source": {
+											"name": "OrderQty",
+											"type": "Int16"
+										},
+										"sink": {
+											"name": "OrderQty",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "ProductID",
+											"type": "Int32"
+										},
+										"sink": {
+											"name": "ProductID",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "UnitPrice",
+											"type": "Decimal"
+										},
+										"sink": {
+											"name": "UnitPrice",
+											"type": "Decimal"
+										}
+									},
+									{
+										"source": {
+											"name": "UnitPriceDiscount",
+											"type": "Decimal"
+										},
+										"sink": {
+											"name": "UnitPriceDiscount",
+											"type": "Decimal"
+										}
+									},
+									{
+										"source": {
+											"name": "LineTotal",
+											"type": "Decimal"
+										},
+										"sink": {
+											"name": "LineTotal",
+											"type": "Decimal"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "02_pipeple_data_set_sql_database",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "02_pipeline_data_set_copy_sqltable_to_synapse",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/05_pipeline_orchestration')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Wait1",
+						"type": "Wait",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"waitTimeInSeconds": 1
+						}
+					},
+					{
+						"name": "execute our sample notebook",
+						"type": "DatabricksNotebook",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
+						"dependsOn": [
+							{
+								"activity": "Wait1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Users/mohamed.grini@aosis.net/orchestrationSample"
+						},
+						"linkedServiceName": {
+							"referenceName": "05_pipeline_databricks_linked_service",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "notebook using managed identity",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "Wait1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Users/mohamed.grini@aosis.net/orchestrationSample"
+						},
+						"linkedServiceName": {
+							"referenceName": "05_pipeline_databricks_orechestration_managed_identity",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DEMO pipeline1')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -773,7 +1039,9 @@
 						"          CustomerID as integer,",
 						"          CustomerName as string,",
 						"          Registered as boolean,",
-						"          Courses as string",
+						"          Courses as string,",
+						"          Mobile as string,",
+						"          City as string",
 						"     ),",
 						"     deletable:false,",
 						"     insertable:true,",
@@ -791,6 +1059,91 @@
 						"          Registered = registered,",
 						"          Courses = courses",
 						"     )) ~> sinkCustomerDedicatedPool"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/05_dataflow_JsonWithColumnObject')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "05_dataflow_JsonObject",
+								"type": "DatasetReference"
+							},
+							"name": "SourceJsonObject"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "05_dataflowJsonColumnObject",
+								"type": "DatasetReference"
+							},
+							"name": "sinkJsonObject"
+						}
+					],
+					"transformations": [
+						{
+							"name": "flattenJsonObject"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          customerid as integer,",
+						"          customername as string,",
+						"          registered as boolean,",
+						"          courses as string[],",
+						"          details as (mobile as string, city as string)",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     documentForm: 'arrayOfDocuments') ~> SourceJsonObject",
+						"SourceJsonObject foldDown(unroll(courses, courses),",
+						"     mapColumn(",
+						"          customerid,",
+						"          customername,",
+						"          registered,",
+						"          courses,",
+						"          details",
+						"     ),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> flattenJsonObject",
+						"flattenJsonObject sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          CustomerID as integer,",
+						"          CustomerName as string,",
+						"          Registered as boolean,",
+						"          Courses as string,",
+						"          Mobile as string,",
+						"          City as string",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     staged: true,",
+						"     allowCopyCommand: true,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          CustomerID = customerid,",
+						"          CustomerName = customername,",
+						"          Registered = registered,",
+						"          Courses = courses,",
+						"          Mobile = details.mobile,",
+						"          City = details.city",
+						"     )) ~> sinkJsonObject"
 					]
 				}
 			},

@@ -2666,11 +2666,19 @@
 					{
 						"name": "Courses",
 						"type": "varchar"
+					},
+					{
+						"name": "Mobile",
+						"type": "varchar"
+					},
+					{
+						"name": "City",
+						"type": "varchar"
 					}
 				],
 				"typeProperties": {
 					"schema": "dbo",
-					"table": "Customercourse"
+					"table": "CustomercourseObject"
 				}
 			},
 			"dependsOn": [
@@ -2719,6 +2727,108 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage_LS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/05_dataflowJsonColumnObject')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DedicatedSql Pool copy csv from adf",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlDWTable",
+				"schema": [
+					{
+						"name": "CustomerID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CustomerName",
+						"type": "varchar"
+					},
+					{
+						"name": "Registered",
+						"type": "bit"
+					},
+					{
+						"name": "Courses",
+						"type": "varchar"
+					},
+					{
+						"name": "Mobile",
+						"type": "varchar"
+					},
+					{
+						"name": "City",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "CustomercourseObject"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/DedicatedSql Pool copy csv from adf')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/05_dataflow_JsonObject')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "02_pipeline_staging",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "customer.json",
+						"folderPath": "CustomerObject",
+						"fileSystem": "data"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"customerid": {
+							"type": "integer"
+						},
+						"customername": {
+							"type": "string"
+						},
+						"registered": {
+							"type": "boolean"
+						},
+						"courses": {
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						},
+						"details": {
+							"type": "object",
+							"properties": {
+								"mobile": {
+									"type": "string"
+								},
+								"city": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/02_pipeline_staging')]"
 			]
 		},
 		{
@@ -4528,7 +4638,9 @@
 						"          CustomerID as integer,",
 						"          CustomerName as string,",
 						"          Registered as boolean,",
-						"          Courses as string",
+						"          Courses as string,",
+						"          Mobile as string,",
+						"          City as string",
 						"     ),",
 						"     deletable:false,",
 						"     insertable:true,",
@@ -4552,6 +4664,94 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/04dataflow_JsonCutomer')]",
 				"[concat(variables('factoryId'), '/datasets/04_dataflow_Json_To_CustomerCourse')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/05_dataflow_JsonWithColumnObject')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "05_dataflow_JsonObject",
+								"type": "DatasetReference"
+							},
+							"name": "SourceJsonObject"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "05_dataflowJsonColumnObject",
+								"type": "DatasetReference"
+							},
+							"name": "sinkJsonObject"
+						}
+					],
+					"transformations": [
+						{
+							"name": "flattenJsonObject"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          customerid as integer,",
+						"          customername as string,",
+						"          registered as boolean,",
+						"          courses as string[],",
+						"          details as (mobile as string, city as string)",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     documentForm: 'arrayOfDocuments') ~> SourceJsonObject",
+						"SourceJsonObject foldDown(unroll(courses, courses),",
+						"     mapColumn(",
+						"          customerid,",
+						"          customername,",
+						"          registered,",
+						"          courses,",
+						"          details",
+						"     ),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> flattenJsonObject",
+						"flattenJsonObject sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          CustomerID as integer,",
+						"          CustomerName as string,",
+						"          Registered as boolean,",
+						"          Courses as string,",
+						"          Mobile as string,",
+						"          City as string",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     staged: true,",
+						"     allowCopyCommand: true,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          CustomerID = customerid,",
+						"          CustomerName = customername,",
+						"          Registered = registered,",
+						"          Courses = courses,",
+						"          Mobile = details.mobile,",
+						"          City = details.city",
+						"     )) ~> sinkJsonObject"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/05_dataflow_JsonObject')]",
+				"[concat(variables('factoryId'), '/datasets/05_dataflowJsonColumnObject')]"
 			]
 		},
 		{
