@@ -14,6 +14,9 @@
 		"02_pipeline_synpase_linked_service_password": {
 			"value": ""
 		},
+		"03_dataflow_jsonFile_From_ADLS_linkedService_accountKey": {
+			"value": ""
+		},
 		"04_pipeline_linked_service_workspaceSynapse_StoredProcedure_password": {
 			"value": ""
 		},
@@ -52,6 +55,9 @@
 		},
 		"02_pipeline_synpase_linked_service_properties_typeProperties_userName": {
 			"value": "sqladminuser"
+		},
+		"03_dataflow_jsonFile_From_ADLS_linkedService_properties_typeProperties_url": {
+			"value": "https://dp203storageaccountt.dfs.core.windows.net/"
 		},
 		"04_pipeline_linked_service_workspaceSynapse_StoredProcedure_properties_typeProperties_server": {
 			"value": "dp203training001.sql.azuresynapse.net"

@@ -19,6 +19,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of '02_pipeline_synpase_linked_service'"
 		},
+		"03_dataflow_jsonFile_From_ADLS_linkedService_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of '03_dataflow_jsonFile_From_ADLS_linkedService'"
+		},
 		"04_pipeline_linked_service_workspaceSynapse_StoredProcedure_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of '04_pipeline_linked_service_workspaceSynapse_StoredProcedure'"
@@ -70,6 +74,10 @@
 		"02_pipeline_synpase_linked_service_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "sqladminuser"
+		},
+		"03_dataflow_jsonFile_From_ADLS_linkedService_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://dp203storageaccountt.dfs.core.windows.net/"
 		},
 		"04_pipeline_linked_service_workspaceSynapse_StoredProcedure_properties_typeProperties_server": {
 			"type": "string",
@@ -211,6 +219,9 @@
 					"02_pipeline_synpase_linked_service_password": {
 						"value": "[parameters('02_pipeline_synpase_linked_service_password')]"
 					},
+					"03_dataflow_jsonFile_From_ADLS_linkedService_accountKey": {
+						"value": "[parameters('03_dataflow_jsonFile_From_ADLS_linkedService_accountKey')]"
+					},
 					"04_pipeline_linked_service_workspaceSynapse_StoredProcedure_password": {
 						"value": "[parameters('04_pipeline_linked_service_workspaceSynapse_StoredProcedure_password')]"
 					},
@@ -232,9 +243,6 @@
 					"GenericAzureSQLdb_training_LS_password": {
 						"value": "[parameters('GenericAzureSQLdb_training_LS_password')]"
 					},
-					"GenericAzureSqlDB_LS_password": {
-						"value": "[parameters('GenericAzureSqlDB_LS_password')]"
-					},
 					"02_pipeline_staging_properties_typeProperties_url": {
 						"value": "[parameters('02_pipeline_staging_properties_typeProperties_url')]"
 					},
@@ -246,6 +254,9 @@
 					},
 					"02_pipeline_synpase_linked_service_properties_typeProperties_userName": {
 						"value": "[parameters('02_pipeline_synpase_linked_service_properties_typeProperties_userName')]"
+					},
+					"03_dataflow_jsonFile_From_ADLS_linkedService_properties_typeProperties_url": {
+						"value": "[parameters('03_dataflow_jsonFile_From_ADLS_linkedService_properties_typeProperties_url')]"
 					},
 					"04_pipeline_linked_service_workspaceSynapse_StoredProcedure_properties_typeProperties_server": {
 						"value": "[parameters('04_pipeline_linked_service_workspaceSynapse_StoredProcedure_properties_typeProperties_server')]"
@@ -288,15 +299,6 @@
 					},
 					"GenericAzureSQLdb_training_LS_properties_typeProperties_userName": {
 						"value": "[parameters('GenericAzureSQLdb_training_LS_properties_typeProperties_userName')]"
-					},
-					"GenericAzureSqlDB_LS_properties_typeProperties_server": {
-						"value": "[parameters('GenericAzureSqlDB_LS_properties_typeProperties_server')]"
-					},
-					"GenericAzureSqlDB_LS_properties_typeProperties_database": {
-						"value": "[parameters('GenericAzureSqlDB_LS_properties_typeProperties_database')]"
-					},
-					"GenericAzureSqlDB_LS_properties_typeProperties_userName": {
-						"value": "[parameters('GenericAzureSqlDB_LS_properties_typeProperties_userName')]"
 					}
 				}
 			},
@@ -316,8 +318,20 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"GenericAzureSqlDB_LS_password": {
+						"value": "[parameters('GenericAzureSqlDB_LS_password')]"
+					},
 					"TestParquet_linked service_accountKey": {
 						"value": "[parameters('TestParquet_linked service_accountKey')]"
+					},
+					"GenericAzureSqlDB_LS_properties_typeProperties_server": {
+						"value": "[parameters('GenericAzureSqlDB_LS_properties_typeProperties_server')]"
+					},
+					"GenericAzureSqlDB_LS_properties_typeProperties_database": {
+						"value": "[parameters('GenericAzureSqlDB_LS_properties_typeProperties_database')]"
+					},
+					"GenericAzureSqlDB_LS_properties_typeProperties_userName": {
+						"value": "[parameters('GenericAzureSqlDB_LS_properties_typeProperties_userName')]"
 					},
 					"Liked_Service_SAS_sasUri": {
 						"value": "[parameters('Liked_Service_SAS_sasUri')]"

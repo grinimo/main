@@ -19,6 +19,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of '02_pipeline_synpase_linked_service'"
 		},
+		"03_dataflow_jsonFile_From_ADLS_linkedService_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of '03_dataflow_jsonFile_From_ADLS_linkedService'"
+		},
 		"04_pipeline_linked_service_workspaceSynapse_StoredProcedure_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of '04_pipeline_linked_service_workspaceSynapse_StoredProcedure'"
@@ -47,10 +51,6 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'GenericAzureSQLdb_training_LS'"
 		},
-		"GenericAzureSqlDB_LS_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'GenericAzureSqlDB_LS'"
-		},
 		"02_pipeline_staging_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://dp203storageaccountt.dfs.core.windows.net/"
@@ -66,6 +66,10 @@
 		"02_pipeline_synpase_linked_service_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "sqladminuser"
+		},
+		"03_dataflow_jsonFile_From_ADLS_linkedService_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://dp203storageaccountt.dfs.core.windows.net/"
 		},
 		"04_pipeline_linked_service_workspaceSynapse_StoredProcedure_properties_typeProperties_server": {
 			"type": "string",
@@ -120,18 +124,6 @@
 			"defaultValue": "@{linkedService().DatabaseNameTraining}"
 		},
 		"GenericAzureSQLdb_training_LS_properties_typeProperties_userName": {
-			"type": "string",
-			"defaultValue": "adminsql"
-		},
-		"GenericAzureSqlDB_LS_properties_typeProperties_server": {
-			"type": "string",
-			"defaultValue": "@{linkedService().ServerName}"
-		},
-		"GenericAzureSqlDB_LS_properties_typeProperties_database": {
-			"type": "string",
-			"defaultValue": "@{linkedService().DabaseName}"
-		},
-		"GenericAzureSqlDB_LS_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "adminsql"
 		}
@@ -442,6 +434,23 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/03_dataflow_jsonFile_From_ADLS_linkedService')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('03_dataflow_jsonFile_From_ADLS_linkedService_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('03_dataflow_jsonFile_From_ADLS_linkedService_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/04_pipeline_linked_service_workspaceSynapse_StoredProcedure')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -632,36 +641,6 @@
 					"password": {
 						"type": "SecureString",
 						"value": "[parameters('GenericAzureSQLdb_training_LS_password')]"
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/GenericAzureSqlDB_LS')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"parameters": {
-					"ServerName": {
-						"type": "string"
-					},
-					"DabaseName": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "AzureSqlDatabase",
-				"typeProperties": {
-					"server": "[parameters('GenericAzureSqlDB_LS_properties_typeProperties_server')]",
-					"database": "[parameters('GenericAzureSqlDB_LS_properties_typeProperties_database')]",
-					"encrypt": "mandatory",
-					"trustServerCertificate": false,
-					"authenticationType": "SQL",
-					"userName": "[parameters('GenericAzureSqlDB_LS_properties_typeProperties_userName')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('GenericAzureSqlDB_LS_password')]"
 					}
 				}
 			},
