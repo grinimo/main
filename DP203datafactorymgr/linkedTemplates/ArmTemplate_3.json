@@ -29,6 +29,88 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/ScheduleTrigger')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "Demo_pipeline_trigger",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					},
+					{
+						"pipelineReference": {
+							"referenceName": "Demo_pipeline_trigger_2",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Day",
+						"interval": 1,
+						"startTime": "2024-08-07T08:51:00",
+						"timeZone": "W. Europe Standard Time",
+						"schedule": {
+							"minutes": [
+								30
+							],
+							"hours": [
+								1
+							]
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ScheduleTriggerEveryMounth')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "Demo_pipeline_trigger",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Month",
+						"interval": 1,
+						"startTime": "2024-08-07T09:16:00",
+						"timeZone": "W. Europe Standard Time",
+						"schedule": {
+							"minutes": [
+								30
+							],
+							"hours": [
+								4
+							],
+							"monthDays": [
+								1
+							]
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/TumblingWindowsTrigger')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
@@ -1660,6 +1742,81 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/06_dataflow_WebLogs_fromVM')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "06_dataflow_WebLog",
+								"type": "DatasetReference"
+							},
+							"name": "sourceWebinADLS"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "06_dataflow_AzureSynapse_Analytics_WebLogs",
+								"type": "DatasetReference"
+							},
+							"name": "WeblogStorageInSynapse"
+						}
+					],
+					"transformations": [
+						{
+							"name": "SplitWebLogbySpace"
+						},
+						{
+							"name": "PickupColumnStructure"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          {2024-08-30 08:57:30 10.0.0.4 GET / - 80 - 185.224.128.84 - - 200 0 0 280} as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     skipLines: 4) ~> sourceWebinADLS",
+						"sourceWebinADLS derive(WebLog = split({2024-08-30 08:57:30 10.0.0.4 GET / - 80 - 185.224.128.84 - - 200 0 0 280},\" \")) ~> SplitWebLogbySpace",
+						"SplitWebLogbySpace derive(LogDate = WebLog[1],",
+						"          IPAddress = WebLog[9],",
+						"          RequestMethod = WebLog[4],",
+						"          RequestResource = WebLog[10]) ~> PickupColumnStructure",
+						"PickupColumnStructure sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          LogDate as date,",
+						"          IPAddress as string,",
+						"          RequestMethod as string,",
+						"          RequestResource as string",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     staged: true,",
+						"     allowCopyCommand: true,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          LogDate,",
+						"          IPAddress,",
+						"          RequestMethod,",
+						"          RequestResource",
+						"     )) ~> WeblogStorageInSynapse"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/03-pipeline-mapping data flow FctSales')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -2126,135 +2283,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/dataflows/04-dataflow_jsonWithArrayColumn')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/08-pipeline_jsonColumnObject')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "JsonColumnObject",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "05_dataflow_JsonWithColumnObject",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"SourceJsonObject": {},
-									"sinkJsonObject": {}
-								}
-							},
-							"staging": {
-								"linkedService": {
-									"referenceName": "02_pipeline_staging",
-									"type": "LinkedServiceReference"
-								},
-								"folderPath": "data/staging"
-							},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/05_dataflow_JsonWithColumnObject')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/09-pipeline_copy_csvfiles_to_adls_SelfHostedIntegrationRuntime')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Copy csv to ADSL self hosted IR",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "FileServerReadSettings",
-									"recursive": true,
-									"wildcardFileName": "*.*",
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"sink": {
-								"type": "DelimitedTextSink",
-								"storeSettings": {
-									"type": "AzureBlobFSWriteSettings"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextWriteSettings",
-									"quoteAllText": true,
-									"fileExtension": ".txt"
-								}
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "09_pipeline_fileSytemCSV",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "09_pipeline_SelfHostedIR",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/09_pipeline_fileSytemCSV')]"
 			]
 		}
 	]

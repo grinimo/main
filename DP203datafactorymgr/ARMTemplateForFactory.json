@@ -2975,6 +2975,78 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/06_dataflow_AzureSynapse_Analytics_WebLogs')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DedicatedSql Pool copy csv from adf",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlDWTable",
+				"schema": [
+					{
+						"name": "LogDate",
+						"type": "date"
+					},
+					{
+						"name": "IPAddress",
+						"type": "varchar"
+					},
+					{
+						"name": "RequestMethod",
+						"type": "varchar"
+					},
+					{
+						"name": "RequestResource",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "WebLogs"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/DedicatedSql Pool copy csv from adf')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/06_dataflow_WebLog')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "03_dataflow_jsonFile_From_ADLS_linkedService",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "u_ex240830.log",
+						"folderPath": "weblog",
+						"fileSystem": "data"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "#Software: Microsoft Internet Information Services 10.0",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/03_dataflow_jsonFile_From_ADLS_linkedService')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/07_pipeline_json_to_dedicatedpool_ActivityPool')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -5028,6 +5100,84 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/05_dataflow_JsonObject')]",
 				"[concat(variables('factoryId'), '/datasets/05_dataflowJsonColumnObject')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/06_dataflow_WebLogs_fromVM')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "06_dataflow_WebLog",
+								"type": "DatasetReference"
+							},
+							"name": "sourceWebinADLS"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "06_dataflow_AzureSynapse_Analytics_WebLogs",
+								"type": "DatasetReference"
+							},
+							"name": "WeblogStorageInSynapse"
+						}
+					],
+					"transformations": [
+						{
+							"name": "SplitWebLogbySpace"
+						},
+						{
+							"name": "PickupColumnStructure"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          {2024-08-30 08:57:30 10.0.0.4 GET / - 80 - 185.224.128.84 - - 200 0 0 280} as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     skipLines: 4) ~> sourceWebinADLS",
+						"sourceWebinADLS derive(WebLog = split({2024-08-30 08:57:30 10.0.0.4 GET / - 80 - 185.224.128.84 - - 200 0 0 280},\" \")) ~> SplitWebLogbySpace",
+						"SplitWebLogbySpace derive(LogDate = WebLog[1],",
+						"          IPAddress = WebLog[9],",
+						"          RequestMethod = WebLog[4],",
+						"          RequestResource = WebLog[10]) ~> PickupColumnStructure",
+						"PickupColumnStructure sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          LogDate as date,",
+						"          IPAddress as string,",
+						"          RequestMethod as string,",
+						"          RequestResource as string",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     staged: true,",
+						"     allowCopyCommand: true,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          LogDate,",
+						"          IPAddress,",
+						"          RequestMethod,",
+						"          RequestResource",
+						"     )) ~> WeblogStorageInSynapse"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/06_dataflow_WebLog')]",
+				"[concat(variables('factoryId'), '/datasets/06_dataflow_AzureSynapse_Analytics_WebLogs')]"
 			]
 		},
 		{
