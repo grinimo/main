@@ -1,0 +1,72 @@
+{
+	"name": "06_dataflow_WebLogs_fromVM",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "06_dataflow_WebLog",
+						"type": "DatasetReference"
+					},
+					"name": "sourceWebinADLS"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "06_dataflow_AzureSynapse_Analytics_WebLogs",
+						"type": "DatasetReference"
+					},
+					"name": "WeblogStorageInSynapse"
+				}
+			],
+			"transformations": [
+				{
+					"name": "SplitWebLogbySpace"
+				},
+				{
+					"name": "PickupColumnStructure"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          {2024-08-30 08:57:30 10.0.0.4 GET / - 80 - 185.224.128.84 - - 200 0 0 280} as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     skipLines: 4) ~> sourceWebinADLS",
+				"sourceWebinADLS derive(WebLog = split({2024-08-30 08:57:30 10.0.0.4 GET / - 80 - 185.224.128.84 - - 200 0 0 280},\" \")) ~> SplitWebLogbySpace",
+				"SplitWebLogbySpace derive(LogDate = WebLog[1],",
+				"          IPAddress = WebLog[9],",
+				"          RequestMethod = WebLog[4],",
+				"          RequestResource = WebLog[10]) ~> PickupColumnStructure",
+				"PickupColumnStructure sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          LogDate as date,",
+				"          IPAddress as string,",
+				"          RequestMethod as string,",
+				"          RequestResource as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     staged: true,",
+				"     allowCopyCommand: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          LogDate,",
+				"          IPAddress,",
+				"          RequestMethod,",
+				"          RequestResource",
+				"     )) ~> WeblogStorageInSynapse"
+			]
+		}
+	}
+}

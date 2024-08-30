@@ -1,0 +1,33 @@
+{
+	"name": "06_dataflow_AzureSynapse_Analytics_WebLogs",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DedicatedSql Pool copy csv from adf",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [
+			{
+				"name": "LogDate",
+				"type": "date"
+			},
+			{
+				"name": "IPAddress",
+				"type": "varchar"
+			},
+			{
+				"name": "RequestMethod",
+				"type": "varchar"
+			},
+			{
+				"name": "RequestResource",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "WebLogs"
+		}
+	}
+}

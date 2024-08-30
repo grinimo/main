@@ -1,0 +1,29 @@
+{
+	"name": "06_dataflow_WebLog",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "03_dataflow_jsonFile_From_ADLS_linkedService",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "u_ex240830.log",
+				"folderPath": "weblog",
+				"fileSystem": "data"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "#Software: Microsoft Internet Information Services 10.0",
+				"type": "String"
+			}
+		]
+	}
+}
