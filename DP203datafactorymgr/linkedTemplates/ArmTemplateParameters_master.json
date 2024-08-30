@@ -81,7 +81,7 @@
 			"value": "0821-103528-5o629451"
 		},
 		"09_pipeline_Self_Hosted_ir_fileSytem_properties_typeProperties_host": {
-			"value": "C:\\Users\\dp203_VM_self_Hosted\\Desktop\\files"
+			"value": "C:\\inetpub\\logs\\LogFiles\\W3SVC1"
 		},
 		"09_pipeline_Self_Hosted_ir_fileSytem_properties_typeProperties_userId": {
 			"value": "dp203_VM_self_Hosted"

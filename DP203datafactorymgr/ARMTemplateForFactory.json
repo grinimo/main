@@ -109,7 +109,7 @@
 		},
 		"09_pipeline_Self_Hosted_ir_fileSytem_properties_typeProperties_host": {
 			"type": "string",
-			"defaultValue": "C:\\Users\\dp203_VM_self_Hosted\\Desktop\\files"
+			"defaultValue": "C:\\inetpub\\logs\\LogFiles\\W3SVC1"
 		},
 		"09_pipeline_Self_Hosted_ir_fileSytem_properties_typeProperties_userId": {
 			"type": "string",
@@ -1493,7 +1493,7 @@
 								"storeSettings": {
 									"type": "FileServerReadSettings",
 									"recursive": true,
-									"wildcardFileName": "*.csv",
+									"wildcardFileName": "*.*",
 									"enablePartitionDiscovery": false
 								},
 								"formatSettings": {
@@ -3009,7 +3009,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"folderPath": "csv",
+						"folderPath": "weblog",
 						"fileSystem": "data"
 					},
 					"columnDelimiter": ",",
