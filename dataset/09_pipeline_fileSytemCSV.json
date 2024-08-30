@@ -1,0 +1,21 @@
+{
+	"name": "09_pipeline_fileSytemCSV",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "09_pipeline_Self_Hosted_ir_fileSytem",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "FileServerLocation"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
