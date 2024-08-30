@@ -1,0 +1,39 @@
+{
+	"name": "10-pipeline_WebLog_in_Synapse",
+	"properties": {
+		"activities": [
+			{
+				"name": "WebLog",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "06_dataflow_WebLogs_fromVM",
+						"type": "DataFlowReference"
+					},
+					"staging": {
+						"linkedService": {
+							"referenceName": "02_pipeline_staging",
+							"type": "LinkedServiceReference"
+						},
+						"folderPath": "data/staging"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"annotations": []
+	}
+}
