@@ -7,29 +7,9 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "DP203datafactorymgr"
 		},
-		"09_pipeline_Self_Hosted_ir_fileSytem_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of '09_pipeline_Self_Hosted_ir_fileSytem'"
-		},
 		"05_pipeline_databricks_linked_service_properties_typeProperties_existingClusterId": {
 			"type": "string",
 			"defaultValue": "0821-103528-5o629451"
-		},
-		"09_pipeline_Self_Hosted_ir_fileSytem_properties_typeProperties_host": {
-			"type": "string",
-			"defaultValue": "C:\\inetpub\\logs\\LogFiles\\W3SVC1"
-		},
-		"09_pipeline_Self_Hosted_ir_fileSytem_properties_typeProperties_userId": {
-			"type": "string",
-			"defaultValue": "dp203_VM_self_Hosted"
-		},
-		"FileUplodedTrigger_properties_Demon_pipeline_Storage_event_parameters_FileName": {
-			"type": "string",
-			"defaultValue": "@triggerBody().fileName"
-		},
-		"FileUplodedTrigger_properties_typeProperties_scope": {
-			"type": "string",
-			"defaultValue": "/subscriptions/f00081c2-4f6c-4b2b-927b-02b4f7ddd4a0/resourceGroups/POC-Databricks-E2E/providers/Microsoft.Storage/storageAccounts/dp203storageaccountt"
 		}
 	},
 	"variables": {
@@ -151,6 +131,97 @@
 				"schema": [
 					{
 						"name": "#Software: Microsoft Internet Information Services 10.0",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/07_dataflow_SplitCondition')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DedicatedSql Pool copy csv from adf",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlDWTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "PoolActivityLog"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/07_dataflow_SplitConditionPoolActivity')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "02_pipeline_staging",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "ActivityLog01.csv",
+						"folderPath": "csv",
+						"fileSystem": "data"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "Correlationid",
+						"type": "String"
+					},
+					{
+						"name": "Operationname",
+						"type": "String"
+					},
+					{
+						"name": "Status",
+						"type": "String"
+					},
+					{
+						"name": "Eventcategory",
+						"type": "String"
+					},
+					{
+						"name": "Level",
+						"type": "String"
+					},
+					{
+						"name": "Time",
+						"type": "String"
+					},
+					{
+						"name": "Subscription",
+						"type": "String"
+					},
+					{
+						"name": "Eventinitiatedby",
+						"type": "String"
+					},
+					{
+						"name": "Resourcetype",
+						"type": "String"
+					},
+					{
+						"name": "Resourcegroup",
+						"type": "String"
+					},
+					{
+						"name": "Resource",
 						"type": "String"
 					}
 				]
@@ -951,59 +1022,6 @@
 						"secretName": "dp203-personnalAcessTokenDatabricks"
 					},
 					"existingClusterId": "[parameters('05_pipeline_databricks_linked_service_properties_typeProperties_existingClusterId')]"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/09_pipeline_Self_Hosted_ir_fileSytem')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "FileServer",
-				"typeProperties": {
-					"host": "[parameters('09_pipeline_Self_Hosted_ir_fileSytem_properties_typeProperties_host')]",
-					"userId": "[parameters('09_pipeline_Self_Hosted_ir_fileSytem_properties_typeProperties_userId')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('09_pipeline_Self_Hosted_ir_fileSytem_password')]"
-					}
-				},
-				"connectVia": {
-					"referenceName": "Self-Hosted-IntegrationRutime",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/FileUplodedTrigger')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"runtimeState": "Stopped",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "Demon_pipeline_Storage_event",
-							"type": "PipelineReference"
-						},
-						"parameters": {
-							"FileName": "[parameters('FileUplodedTrigger_properties_Demon_pipeline_Storage_event_parameters_FileName')]"
-						}
-					}
-				],
-				"type": "BlobEventsTrigger",
-				"typeProperties": {
-					"blobPathBeginsWith": "/raw/blobs/",
-					"blobPathEndsWith": ".csv",
-					"ignoreEmptyBlobs": true,
-					"scope": "[parameters('FileUplodedTrigger_properties_typeProperties_scope')]",
-					"events": [
-						"Microsoft.Storage.BlobCreated"
-					]
 				}
 			},
 			"dependsOn": []

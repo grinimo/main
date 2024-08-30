@@ -3100,6 +3100,101 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/07_dataflow_SplitCondition')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DedicatedSql Pool copy csv from adf",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlDWTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "PoolActivityLog"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/DedicatedSql Pool copy csv from adf')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/07_dataflow_SplitConditionPoolActivity')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "02_pipeline_staging",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "ActivityLog01.csv",
+						"folderPath": "csv",
+						"fileSystem": "data"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "Correlationid",
+						"type": "String"
+					},
+					{
+						"name": "Operationname",
+						"type": "String"
+					},
+					{
+						"name": "Status",
+						"type": "String"
+					},
+					{
+						"name": "Eventcategory",
+						"type": "String"
+					},
+					{
+						"name": "Level",
+						"type": "String"
+					},
+					{
+						"name": "Time",
+						"type": "String"
+					},
+					{
+						"name": "Subscription",
+						"type": "String"
+					},
+					{
+						"name": "Eventinitiatedby",
+						"type": "String"
+					},
+					{
+						"name": "Resourcetype",
+						"type": "String"
+					},
+					{
+						"name": "Resourcegroup",
+						"type": "String"
+					},
+					{
+						"name": "Resource",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/02_pipeline_staging')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/07_pipeline_json_to_dedicatedpool_ActivityPool')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -5231,6 +5326,88 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/06_dataflow_WebLog')]",
 				"[concat(variables('factoryId'), '/datasets/06_dataflow_AzureSynapse_Analytics_WebLogs')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/07_dataflow_splitCondition')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "07_dataflow_SplitConditionPoolActivity",
+								"type": "DatasetReference"
+							},
+							"name": "source01ActivityPool"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "07_dataflow_SplitCondition",
+								"type": "DatasetReference"
+							},
+							"name": "sinkActivityPoolSynapse"
+						}
+					],
+					"transformations": [
+						{
+							"name": "splitResourceGroup"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          Correlationid as string,",
+						"          Operationname as string,",
+						"          Status as string,",
+						"          Eventcategory as string,",
+						"          Level as string,",
+						"          Time as date,",
+						"          Subscription as string,",
+						"          Eventinitiatedby as string,",
+						"          Resourcetype as string,",
+						"          Resourcegroup as string,",
+						"          Resource as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> source01ActivityPool",
+						"source01ActivityPool split(Resourcegroup=='app-grp',",
+						"     disjoint: false) ~> splitResourceGroup@(StreamResourceGroup, StreamWithoutCondition)",
+						"splitResourceGroup@StreamResourceGroup sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     staged: true,",
+						"     allowCopyCommand: true,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          Correlationid,",
+						"          Operationname,",
+						"          Status,",
+						"          Eventcategory,",
+						"          Level,",
+						"          Time,",
+						"          Subscription,",
+						"          Eventinitiatedby,",
+						"          Resourcetype,",
+						"          Resourcegroup,",
+						"          Resource",
+						"     )) ~> sinkActivityPoolSynapse"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/07_dataflow_SplitConditionPoolActivity')]",
+				"[concat(variables('factoryId'), '/datasets/07_dataflow_SplitCondition')]"
 			]
 		},
 		{

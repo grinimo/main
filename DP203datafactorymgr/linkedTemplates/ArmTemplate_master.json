@@ -371,23 +371,8 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
-					"09_pipeline_Self_Hosted_ir_fileSytem_password": {
-						"value": "[parameters('09_pipeline_Self_Hosted_ir_fileSytem_password')]"
-					},
 					"05_pipeline_databricks_linked_service_properties_typeProperties_existingClusterId": {
 						"value": "[parameters('05_pipeline_databricks_linked_service_properties_typeProperties_existingClusterId')]"
-					},
-					"09_pipeline_Self_Hosted_ir_fileSytem_properties_typeProperties_host": {
-						"value": "[parameters('09_pipeline_Self_Hosted_ir_fileSytem_properties_typeProperties_host')]"
-					},
-					"09_pipeline_Self_Hosted_ir_fileSytem_properties_typeProperties_userId": {
-						"value": "[parameters('09_pipeline_Self_Hosted_ir_fileSytem_properties_typeProperties_userId')]"
-					},
-					"FileUplodedTrigger_properties_Demon_pipeline_Storage_event_parameters_FileName": {
-						"value": "[parameters('FileUplodedTrigger_properties_Demon_pipeline_Storage_event_parameters_FileName')]"
-					},
-					"FileUplodedTrigger_properties_typeProperties_scope": {
-						"value": "[parameters('FileUplodedTrigger_properties_typeProperties_scope')]"
 					}
 				}
 			},
@@ -408,6 +393,21 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"09_pipeline_Self_Hosted_ir_fileSytem_password": {
+						"value": "[parameters('09_pipeline_Self_Hosted_ir_fileSytem_password')]"
+					},
+					"09_pipeline_Self_Hosted_ir_fileSytem_properties_typeProperties_host": {
+						"value": "[parameters('09_pipeline_Self_Hosted_ir_fileSytem_properties_typeProperties_host')]"
+					},
+					"09_pipeline_Self_Hosted_ir_fileSytem_properties_typeProperties_userId": {
+						"value": "[parameters('09_pipeline_Self_Hosted_ir_fileSytem_properties_typeProperties_userId')]"
+					},
+					"FileUplodedTrigger_properties_Demon_pipeline_Storage_event_parameters_FileName": {
+						"value": "[parameters('FileUplodedTrigger_properties_Demon_pipeline_Storage_event_parameters_FileName')]"
+					},
+					"FileUplodedTrigger_properties_typeProperties_scope": {
+						"value": "[parameters('FileUplodedTrigger_properties_typeProperties_scope')]"
 					},
 					"TumblingWindowsTrigger_properties_pipeline_parameters_windowStart": {
 						"value": "[parameters('TumblingWindowsTrigger_properties_pipeline_parameters_windowStart')]"
