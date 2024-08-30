@@ -1,0 +1,16 @@
+{
+	"name": "07_dataflow_SplitCondition",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DedicatedSql Pool copy csv from adf",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "PoolActivityLog"
+		}
+	}
+}
