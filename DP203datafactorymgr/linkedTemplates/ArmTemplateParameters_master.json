@@ -20,6 +20,9 @@
 		"04_pipeline_linked_service_workspaceSynapse_StoredProcedure_password": {
 			"value": ""
 		},
+		"09_pipeline_Self_Hosted_ir_fileSytem_password": {
+			"value": ""
+		},
 		"AdvantureWork_LS_password": {
 			"value": ""
 		},
@@ -76,6 +79,12 @@
 		},
 		"05_pipeline_databricks_orechestration_managed_identity_properties_typeProperties_existingClusterId": {
 			"value": "0821-103528-5o629451"
+		},
+		"09_pipeline_Self_Hosted_ir_fileSytem_properties_typeProperties_host": {
+			"value": "C:\\Users\\dp203_VM_self_Hosted\\Desktop\\files"
+		},
+		"09_pipeline_Self_Hosted_ir_fileSytem_properties_typeProperties_userId": {
+			"value": "dp203_VM_self_Hosted"
 		},
 		"AdvantureWork_LS_properties_typeProperties_server": {
 			"value": "dp203databaseservertraining.database.windows.net"

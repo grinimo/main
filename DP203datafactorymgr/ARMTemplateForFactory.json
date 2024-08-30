@@ -27,6 +27,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of '04_pipeline_linked_service_workspaceSynapse_StoredProcedure'"
 		},
+		"09_pipeline_Self_Hosted_ir_fileSytem_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of '09_pipeline_Self_Hosted_ir_fileSytem'"
+		},
 		"AdvantureWork_LS_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'AdvantureWork_LS'"
@@ -102,6 +106,14 @@
 		"05_pipeline_databricks_orechestration_managed_identity_properties_typeProperties_existingClusterId": {
 			"type": "string",
 			"defaultValue": "0821-103528-5o629451"
+		},
+		"09_pipeline_Self_Hosted_ir_fileSytem_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "C:\\Users\\dp203_VM_self_Hosted\\Desktop\\files"
+		},
+		"09_pipeline_Self_Hosted_ir_fileSytem_properties_typeProperties_userId": {
+			"type": "string",
+			"defaultValue": "dp203_VM_self_Hosted"
 		},
 		"AdvantureWork_LS_properties_typeProperties_server": {
 			"type": "string",
@@ -1455,6 +1467,84 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/dataflows/05_dataflow_JsonWithColumnObject')]",
 				"[concat(variables('factoryId'), '/linkedServices/02_pipeline_staging')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/09-pipeline_copy_csvfiles_to_adls_SelfHostedIntegrationRuntime')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy csv to ADSL self hosted IR",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "FileServerReadSettings",
+									"recursive": true,
+									"wildcardFileName": "*.csv",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "09_pipeline_fileSytemCSV",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "09_pipeline_SelfHostedIR",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/09_pipeline_fileSytemCSV')]",
+				"[concat(variables('factoryId'), '/datasets/09_pipeline_SelfHostedIR')]"
 			]
 		},
 		{
@@ -2906,6 +2996,105 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/09_pipeline_SelfHostedIR')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage_LS",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "csv",
+						"fileSystem": "data"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "Correlationid",
+						"type": "String"
+					},
+					{
+						"name": "Operationname",
+						"type": "String"
+					},
+					{
+						"name": "Status",
+						"type": "String"
+					},
+					{
+						"name": "Eventcategory",
+						"type": "String"
+					},
+					{
+						"name": "Level",
+						"type": "String"
+					},
+					{
+						"name": "Time",
+						"type": "String"
+					},
+					{
+						"name": "Subscription",
+						"type": "String"
+					},
+					{
+						"name": "Eventinitiatedby",
+						"type": "String"
+					},
+					{
+						"name": "Resourcetype",
+						"type": "String"
+					},
+					{
+						"name": "Resourcegroup",
+						"type": "String"
+					},
+					{
+						"name": "Resource",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage_LS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/09_pipeline_fileSytemCSV')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "09_pipeline_Self_Hosted_ir_fileSytem",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "FileServerLocation"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/09_pipeline_Self_Hosted_ir_fileSytem')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/CustomerSQL_DS')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -3780,6 +3969,30 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/09_pipeline_Self_Hosted_ir_fileSytem')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "FileServer",
+				"typeProperties": {
+					"host": "[parameters('09_pipeline_Self_Hosted_ir_fileSytem_properties_typeProperties_host')]",
+					"userId": "[parameters('09_pipeline_Self_Hosted_ir_fileSytem_properties_typeProperties_userId')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('09_pipeline_Self_Hosted_ir_fileSytem_password')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "Self-Hosted-IntegrationRutime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/Self-Hosted-IntegrationRutime')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/AdvantureWork_LS')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -4151,6 +4364,16 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/pipeline_demo_review')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Self-Hosted-IntegrationRutime')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "SelfHosted",
+				"typeProperties": {}
+			},
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/01_dataflow_FactSales')]",

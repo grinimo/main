@@ -27,6 +27,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of '04_pipeline_linked_service_workspaceSynapse_StoredProcedure'"
 		},
+		"09_pipeline_Self_Hosted_ir_fileSytem_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of '09_pipeline_Self_Hosted_ir_fileSytem'"
+		},
 		"AdvantureWork_LS_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'AdvantureWork_LS'"
@@ -102,6 +106,14 @@
 		"05_pipeline_databricks_orechestration_managed_identity_properties_typeProperties_existingClusterId": {
 			"type": "string",
 			"defaultValue": "0821-103528-5o629451"
+		},
+		"09_pipeline_Self_Hosted_ir_fileSytem_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "C:\\Users\\dp203_VM_self_Hosted\\Desktop\\files"
+		},
+		"09_pipeline_Self_Hosted_ir_fileSytem_properties_typeProperties_userId": {
+			"type": "string",
+			"defaultValue": "dp203_VM_self_Hosted"
 		},
 		"AdvantureWork_LS_properties_typeProperties_server": {
 			"type": "string",
@@ -359,26 +371,23 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"09_pipeline_Self_Hosted_ir_fileSytem_password": {
+						"value": "[parameters('09_pipeline_Self_Hosted_ir_fileSytem_password')]"
+					},
 					"05_pipeline_databricks_linked_service_properties_typeProperties_existingClusterId": {
 						"value": "[parameters('05_pipeline_databricks_linked_service_properties_typeProperties_existingClusterId')]"
+					},
+					"09_pipeline_Self_Hosted_ir_fileSytem_properties_typeProperties_host": {
+						"value": "[parameters('09_pipeline_Self_Hosted_ir_fileSytem_properties_typeProperties_host')]"
+					},
+					"09_pipeline_Self_Hosted_ir_fileSytem_properties_typeProperties_userId": {
+						"value": "[parameters('09_pipeline_Self_Hosted_ir_fileSytem_properties_typeProperties_userId')]"
 					},
 					"FileUplodedTrigger_properties_Demon_pipeline_Storage_event_parameters_FileName": {
 						"value": "[parameters('FileUplodedTrigger_properties_Demon_pipeline_Storage_event_parameters_FileName')]"
 					},
 					"FileUplodedTrigger_properties_typeProperties_scope": {
 						"value": "[parameters('FileUplodedTrigger_properties_typeProperties_scope')]"
-					},
-					"TumblingWindowsTrigger_properties_pipeline_parameters_windowStart": {
-						"value": "[parameters('TumblingWindowsTrigger_properties_pipeline_parameters_windowStart')]"
-					},
-					"TumblingWindowsTrigger_properties_pipeline_parameters_windowEnd": {
-						"value": "[parameters('TumblingWindowsTrigger_properties_pipeline_parameters_windowEnd')]"
-					},
-					"trigger1TumblingWindows_properties_pipeline_parameters_WindowsStart": {
-						"value": "[parameters('trigger1TumblingWindows_properties_pipeline_parameters_WindowsStart')]"
-					},
-					"trigger1TumblingWindows_properties_pipeline_parameters_WindowsEnd": {
-						"value": "[parameters('trigger1TumblingWindows_properties_pipeline_parameters_WindowsEnd')]"
 					}
 				}
 			},
@@ -399,6 +408,18 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"TumblingWindowsTrigger_properties_pipeline_parameters_windowStart": {
+						"value": "[parameters('TumblingWindowsTrigger_properties_pipeline_parameters_windowStart')]"
+					},
+					"TumblingWindowsTrigger_properties_pipeline_parameters_windowEnd": {
+						"value": "[parameters('TumblingWindowsTrigger_properties_pipeline_parameters_windowEnd')]"
+					},
+					"trigger1TumblingWindows_properties_pipeline_parameters_WindowsStart": {
+						"value": "[parameters('trigger1TumblingWindows_properties_pipeline_parameters_WindowsStart')]"
+					},
+					"trigger1TumblingWindows_properties_pipeline_parameters_WindowsEnd": {
+						"value": "[parameters('trigger1TumblingWindows_properties_pipeline_parameters_WindowsEnd')]"
 					}
 				}
 			},

@@ -101,6 +101,16 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/Self-Hosted-IntegrationRutime')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "SelfHosted",
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/default')]",
 			"type": "Microsoft.DataFactory/factories/managedVirtualNetworks",
 			"apiVersion": "2018-06-01",
@@ -1010,59 +1020,6 @@
 				"typeProperties": {
 					"schema": "dbo",
 					"table": "CustomercourseObject"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/05_dataflow_JsonObject')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "02_pipeline_staging",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "customer.json",
-						"folderPath": "CustomerObject",
-						"fileSystem": "data"
-					}
-				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"customerid": {
-							"type": "integer"
-						},
-						"customername": {
-							"type": "string"
-						},
-						"registered": {
-							"type": "boolean"
-						},
-						"courses": {
-							"type": "array",
-							"items": {
-								"type": "string"
-							}
-						},
-						"details": {
-							"type": "object",
-							"properties": {
-								"mobile": {
-									"type": "string"
-								},
-								"city": {
-									"type": "string"
-								}
-							}
-						}
-					}
 				}
 			},
 			"dependsOn": []
