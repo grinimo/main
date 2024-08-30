@@ -1,0 +1,6 @@
+{
+	"name": "Self-Hosted-IntegrationRutime",
+	"properties": {
+		"type": "SelfHosted"
+	}
+}
