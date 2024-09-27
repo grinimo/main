@@ -13,6 +13,407 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/04-dataflow_jsonWithArrayColumn')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "04dataflow_JsonCutomer",
+								"type": "DatasetReference"
+							},
+							"name": "sourceCustomeJson"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "04_dataflow_Json_To_CustomerCourse",
+								"type": "DatasetReference"
+							},
+							"name": "sinkCustomerDedicatedPool"
+						}
+					],
+					"transformations": [
+						{
+							"name": "flattenCustomerJsonArrays"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          customerid as integer,",
+						"          customername as string,",
+						"          registered as boolean,",
+						"          courses as string[]",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     documentForm: 'arrayOfDocuments') ~> sourceCustomeJson",
+						"sourceCustomeJson foldDown(unroll(courses, courses),",
+						"     mapColumn(",
+						"          customerid,",
+						"          customername,",
+						"          registered,",
+						"          courses",
+						"     ),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> flattenCustomerJsonArrays",
+						"flattenCustomerJsonArrays sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          CustomerID as integer,",
+						"          CustomerName as string,",
+						"          Registered as boolean,",
+						"          Courses as string,",
+						"          Mobile as string,",
+						"          City as string",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     staged: true,",
+						"     allowCopyCommand: true,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          CustomerID = customerid,",
+						"          CustomerName = customername,",
+						"          Registered = registered,",
+						"          Courses = courses",
+						"     )) ~> sinkCustomerDedicatedPool"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/05_dataflow_JsonWithColumnObject')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "05_dataflow_JsonObject",
+								"type": "DatasetReference"
+							},
+							"name": "SourceJsonObject"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "05_dataflowJsonColumnObject",
+								"type": "DatasetReference"
+							},
+							"name": "sinkJsonObject"
+						}
+					],
+					"transformations": [
+						{
+							"name": "flattenJsonObject"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          customerid as integer,",
+						"          customername as string,",
+						"          registered as boolean,",
+						"          courses as string[],",
+						"          details as (mobile as string, city as string)",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     documentForm: 'arrayOfDocuments') ~> SourceJsonObject",
+						"SourceJsonObject foldDown(unroll(courses, courses),",
+						"     mapColumn(",
+						"          customerid,",
+						"          customername,",
+						"          registered,",
+						"          courses,",
+						"          details",
+						"     ),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> flattenJsonObject",
+						"flattenJsonObject sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          CustomerID as integer,",
+						"          CustomerName as string,",
+						"          Registered as boolean,",
+						"          Courses as string,",
+						"          Mobile as string,",
+						"          City as string",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     staged: true,",
+						"     allowCopyCommand: true,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          CustomerID = customerid,",
+						"          CustomerName = customername,",
+						"          Registered = registered,",
+						"          Courses = courses,",
+						"          Mobile = details.mobile,",
+						"          City = details.city",
+						"     )) ~> sinkJsonObject"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/06_dataflow_WebLogs_fromVM')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "06_dataflow_WebLog",
+								"type": "DatasetReference"
+							},
+							"name": "sourceWebinADLS"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "06_dataflow_AzureSynapse_Analytics_WebLogs",
+								"type": "DatasetReference"
+							},
+							"name": "WeblogStorageInSynapse"
+						}
+					],
+					"transformations": [
+						{
+							"name": "SplitWebLogbySpace"
+						},
+						{
+							"name": "PickupColumnStructure"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          {2024-08-30 08:57:30 10.0.0.4 GET / - 80 - 185.224.128.84 - - 200 0 0 280} as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     skipLines: 4) ~> sourceWebinADLS",
+						"sourceWebinADLS derive(WebLog = split({2024-08-30 08:57:30 10.0.0.4 GET / - 80 - 185.224.128.84 - - 200 0 0 280},\" \")) ~> SplitWebLogbySpace",
+						"SplitWebLogbySpace derive(LogDate = WebLog[1],",
+						"          IPAddress = WebLog[9],",
+						"          RequestMethod = WebLog[4],",
+						"          RequestResource = WebLog[10]) ~> PickupColumnStructure",
+						"PickupColumnStructure sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          LogDate as date,",
+						"          IPAddress as string,",
+						"          RequestMethod as string,",
+						"          RequestResource as string",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     staged: true,",
+						"     allowCopyCommand: true,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          LogDate,",
+						"          IPAddress,",
+						"          RequestMethod,",
+						"          RequestResource",
+						"     )) ~> WeblogStorageInSynapse"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/07_dataflow_splitCondition')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "07_dataflow_SplitConditionPoolActivity",
+								"type": "DatasetReference"
+							},
+							"name": "source01ActivityPool"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "07_dataflow_SplitCondition",
+								"type": "DatasetReference"
+							},
+							"name": "sinkActivityPoolSynapse"
+						}
+					],
+					"transformations": [
+						{
+							"name": "splitResourceGroup"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          Correlationid as string,",
+						"          Operationname as string,",
+						"          Status as string,",
+						"          Eventcategory as string,",
+						"          Level as string,",
+						"          Time as date,",
+						"          Subscription as string,",
+						"          Eventinitiatedby as string,",
+						"          Resourcetype as string,",
+						"          Resourcegroup as string,",
+						"          Resource as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> source01ActivityPool",
+						"source01ActivityPool split(Resourcegroup=='app-grp',",
+						"     disjoint: false) ~> splitResourceGroup@(StreamResourceGroup, StreamWithoutCondition)",
+						"splitResourceGroup@StreamResourceGroup sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     staged: true,",
+						"     allowCopyCommand: true,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          Correlationid,",
+						"          Operationname,",
+						"          Status,",
+						"          Eventcategory,",
+						"          Level,",
+						"          Time,",
+						"          Subscription,",
+						"          Eventinitiatedby,",
+						"          Resourcetype,",
+						"          Resourcegroup,",
+						"          Resource",
+						"     )) ~> sinkActivityPoolSynapse"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/08_dataflow_aggregation')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "02_dataflow_Customer",
+								"type": "DatasetReference"
+							},
+							"name": "sourceCustomer"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "09_pipeline_SelfHostedIR",
+								"type": "DatasetReference"
+							},
+							"name": "sinkAggregation"
+						}
+					],
+					"transformations": [
+						{
+							"name": "aggregateFunction"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          ProductID as integer,",
+						"          Name as string,",
+						"          ProductNumber as string,",
+						"          Color as string,",
+						"          StandardCost as decimal(19,4),",
+						"          ListPrice as decimal(19,4),",
+						"          Size as string,",
+						"          Weight as decimal(8,2),",
+						"          ProductCategoryID as integer,",
+						"          ProductModelID as integer,",
+						"          SellStartDate as timestamp,",
+						"          SellEndDate as timestamp,",
+						"          DiscontinuedDate as timestamp,",
+						"          ThumbNailPhoto as binary,",
+						"          ThumbnailPhotoFileName as string,",
+						"          rowguid as string,",
+						"          ModifiedDate as timestamp",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> sourceCustomer",
+						"sourceCustomer aggregate(groupBy(Color),",
+						"     ListPrice = count()) ~> aggregateFunction",
+						"aggregateFunction sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          Correlationid as string,",
+						"          Operationname as string,",
+						"          Status as string,",
+						"          Eventcategory as string,",
+						"          Level as string,",
+						"          Time as string,",
+						"          Subscription as string,",
+						"          Eventinitiatedby as string,",
+						"          Resourcetype as string,",
+						"          Resourcegroup as string,",
+						"          Resource as string",
+						"     ),",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sinkAggregation"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/03-pipeline-mapping data flow FctSales')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -471,7 +872,9 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/04-dataflow_jsonWithArrayColumn')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/08-pipeline_jsonColumnObject')]",
@@ -521,7 +924,9 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/05_dataflow_JsonWithColumnObject')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/09-pipeline_copy_csvfiles_to_adls_SelfHostedIntegrationRuntime')]",
@@ -646,7 +1051,9 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/06_dataflow_WebLogs_fromVM')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/11_pipeline_splitCondition')]",
@@ -696,7 +1103,9 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/07_dataflow_splitCondition')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/12_pipeline_get_metada_from_ADLS')]",
@@ -778,7 +1187,9 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/08_dataflow_aggregation')]"
+			]
 		}
 	]
 }

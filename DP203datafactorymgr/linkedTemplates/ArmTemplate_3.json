@@ -11,6 +11,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of '09_pipeline_Self_Hosted_ir_fileSytem'"
 		},
+		"05_pipeline_databricks_linked_service_properties_typeProperties_existingClusterId": {
+			"type": "string",
+			"defaultValue": "0821-103528-5o629451"
+		},
 		"09_pipeline_Self_Hosted_ir_fileSytem_properties_typeProperties_host": {
 			"type": "string",
 			"defaultValue": "C:\\inetpub\\logs\\LogFiles\\W3SVC1"
@@ -48,6 +52,263 @@
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/Transfer_csv_to_parquet')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Copy_file_CSV_Dedicated_PoolActivityLog_synapse",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "parquet",
+						"fileSystem": "data"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "Correlationid",
+						"type": "String"
+					},
+					{
+						"name": "Operationname",
+						"type": "String"
+					},
+					{
+						"name": "Status",
+						"type": "String"
+					},
+					{
+						"name": "Eventcategory",
+						"type": "String"
+					},
+					{
+						"name": "Level",
+						"type": "String"
+					},
+					{
+						"name": "Time",
+						"type": "String"
+					},
+					{
+						"name": "Subscription",
+						"type": "String"
+					},
+					{
+						"name": "Eventinitiatedby",
+						"type": "String"
+					},
+					{
+						"name": "Resourcetype",
+						"type": "String"
+					},
+					{
+						"name": "Resourcegroup",
+						"type": "String"
+					},
+					{
+						"name": "Resource",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/copy_parquet_to_dedicated_SQL_Pool')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DedicatedSql Pool copy csv from adf",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlDWTable",
+				"schema": [
+					{
+						"name": "SalesOrderID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "OrderDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "CustomerID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "SubTotal",
+						"type": "money",
+						"precision": 19,
+						"scale": 4
+					},
+					{
+						"name": "TaxAmt",
+						"type": "money",
+						"precision": 19,
+						"scale": 4
+					},
+					{
+						"name": "Freight",
+						"type": "money",
+						"precision": 19,
+						"scale": 4
+					},
+					{
+						"name": "TotalDue",
+						"type": "money",
+						"precision": 19,
+						"scale": 4
+					},
+					{
+						"name": "OrderQty",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ProductID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "UnitPrice",
+						"type": "money",
+						"precision": 19,
+						"scale": 4
+					},
+					{
+						"name": "UnitPriceDiscount",
+						"type": "money",
+						"precision": 19,
+						"scale": 4
+					},
+					{
+						"name": "LineTotal",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 0
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "factSales"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/copyforeach')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "02_pipeline_staging",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"filename": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "csv",
+						"fileSystem": "data"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "Correlationid",
+						"type": "String"
+					},
+					{
+						"name": "Operationname",
+						"type": "String"
+					},
+					{
+						"name": "Status",
+						"type": "String"
+					},
+					{
+						"name": "Eventcategory",
+						"type": "String"
+					},
+					{
+						"name": "Level",
+						"type": "String"
+					},
+					{
+						"name": "Time",
+						"type": "String"
+					},
+					{
+						"name": "Subscription",
+						"type": "String"
+					},
+					{
+						"name": "Eventinitiatedby",
+						"type": "String"
+					},
+					{
+						"name": "Resourcetype",
+						"type": "String"
+					},
+					{
+						"name": "Resourcegroup",
+						"type": "String"
+					},
+					{
+						"name": "Resource",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/05_pipeline_databricks_linked_service')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureDatabricks",
+				"typeProperties": {
+					"domain": "https://adb-7020639691561392.12.azuredatabricks.net",
+					"accessToken": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "05_pipeline_databricks_orchestration_key_vault",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "dp203-personnalAcessTokenDatabricks"
+					},
+					"existingClusterId": "[parameters('05_pipeline_databricks_linked_service_properties_typeProperties_existingClusterId')]"
+				}
+			},
+			"dependsOn": []
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/09_pipeline_Self_Hosted_ir_fileSytem')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
@@ -651,7 +912,9 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Transfer_csv_to_parquet')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/02-pipeline copy table to dedicated pool')]",
@@ -917,7 +1180,143 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/05_pipeline_databricks_linked_service')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/13_pipeline_get_metadata_foreach')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "01-Activity-GetBlob",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "Metadata_in_adls",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"fieldList": [
+								"childItems"
+							],
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "DelimitedTextReadSettings"
+							}
+						}
+					},
+					{
+						"name": "ForEach1",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "01-Activity-GetBlob",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('01-Activity-GetBlob').output.itemName",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "Copy data1",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "DelimitedTextSource",
+											"storeSettings": {
+												"type": "AzureBlobFSReadSettings",
+												"recursive": true,
+												"wildcardFileName": "*",
+												"enablePartitionDiscovery": false
+											},
+											"formatSettings": {
+												"type": "DelimitedTextReadSettings"
+											}
+										},
+										"sink": {
+											"type": "DelimitedTextSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "DelimitedTextWriteSettings",
+												"quoteAllText": true,
+												"fileExtension": ".txt"
+											}
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "copyforeach",
+											"type": "DatasetReference",
+											"parameters": {
+												"filename": {
+													"value": "@item().Name",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "CopyData",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									]
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/copyforeach')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/DEMO pipeline1')]",
@@ -1332,7 +1731,9 @@
 					]
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/copy_parquet_to_dedicated_SQL_Pool')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/02-dataflow_dimCustomer')]",
@@ -1645,407 +2046,6 @@
 						"          Resourcegroup,",
 						"          Resource",
 						"     )) ~> sinkFileJson"
-					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/04-dataflow_jsonWithArrayColumn')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "04dataflow_JsonCutomer",
-								"type": "DatasetReference"
-							},
-							"name": "sourceCustomeJson"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "04_dataflow_Json_To_CustomerCourse",
-								"type": "DatasetReference"
-							},
-							"name": "sinkCustomerDedicatedPool"
-						}
-					],
-					"transformations": [
-						{
-							"name": "flattenCustomerJsonArrays"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          customerid as integer,",
-						"          customername as string,",
-						"          registered as boolean,",
-						"          courses as string[]",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false,",
-						"     documentForm: 'arrayOfDocuments') ~> sourceCustomeJson",
-						"sourceCustomeJson foldDown(unroll(courses, courses),",
-						"     mapColumn(",
-						"          customerid,",
-						"          customername,",
-						"          registered,",
-						"          courses",
-						"     ),",
-						"     skipDuplicateMapInputs: false,",
-						"     skipDuplicateMapOutputs: false) ~> flattenCustomerJsonArrays",
-						"flattenCustomerJsonArrays sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     input(",
-						"          CustomerID as integer,",
-						"          CustomerName as string,",
-						"          Registered as boolean,",
-						"          Courses as string,",
-						"          Mobile as string,",
-						"          City as string",
-						"     ),",
-						"     deletable:false,",
-						"     insertable:true,",
-						"     updateable:false,",
-						"     upsertable:false,",
-						"     format: 'table',",
-						"     staged: true,",
-						"     allowCopyCommand: true,",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     errorHandlingOption: 'stopOnFirstError',",
-						"     mapColumn(",
-						"          CustomerID = customerid,",
-						"          CustomerName = customername,",
-						"          Registered = registered,",
-						"          Courses = courses",
-						"     )) ~> sinkCustomerDedicatedPool"
-					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/05_dataflow_JsonWithColumnObject')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "05_dataflow_JsonObject",
-								"type": "DatasetReference"
-							},
-							"name": "SourceJsonObject"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "05_dataflowJsonColumnObject",
-								"type": "DatasetReference"
-							},
-							"name": "sinkJsonObject"
-						}
-					],
-					"transformations": [
-						{
-							"name": "flattenJsonObject"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          customerid as integer,",
-						"          customername as string,",
-						"          registered as boolean,",
-						"          courses as string[],",
-						"          details as (mobile as string, city as string)",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false,",
-						"     documentForm: 'arrayOfDocuments') ~> SourceJsonObject",
-						"SourceJsonObject foldDown(unroll(courses, courses),",
-						"     mapColumn(",
-						"          customerid,",
-						"          customername,",
-						"          registered,",
-						"          courses,",
-						"          details",
-						"     ),",
-						"     skipDuplicateMapInputs: false,",
-						"     skipDuplicateMapOutputs: false) ~> flattenJsonObject",
-						"flattenJsonObject sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     input(",
-						"          CustomerID as integer,",
-						"          CustomerName as string,",
-						"          Registered as boolean,",
-						"          Courses as string,",
-						"          Mobile as string,",
-						"          City as string",
-						"     ),",
-						"     deletable:false,",
-						"     insertable:true,",
-						"     updateable:false,",
-						"     upsertable:false,",
-						"     format: 'table',",
-						"     staged: true,",
-						"     allowCopyCommand: true,",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     errorHandlingOption: 'stopOnFirstError',",
-						"     mapColumn(",
-						"          CustomerID = customerid,",
-						"          CustomerName = customername,",
-						"          Registered = registered,",
-						"          Courses = courses,",
-						"          Mobile = details.mobile,",
-						"          City = details.city",
-						"     )) ~> sinkJsonObject"
-					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/06_dataflow_WebLogs_fromVM')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "06_dataflow_WebLog",
-								"type": "DatasetReference"
-							},
-							"name": "sourceWebinADLS"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "06_dataflow_AzureSynapse_Analytics_WebLogs",
-								"type": "DatasetReference"
-							},
-							"name": "WeblogStorageInSynapse"
-						}
-					],
-					"transformations": [
-						{
-							"name": "SplitWebLogbySpace"
-						},
-						{
-							"name": "PickupColumnStructure"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          {2024-08-30 08:57:30 10.0.0.4 GET / - 80 - 185.224.128.84 - - 200 0 0 280} as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false,",
-						"     skipLines: 4) ~> sourceWebinADLS",
-						"sourceWebinADLS derive(WebLog = split({2024-08-30 08:57:30 10.0.0.4 GET / - 80 - 185.224.128.84 - - 200 0 0 280},\" \")) ~> SplitWebLogbySpace",
-						"SplitWebLogbySpace derive(LogDate = WebLog[1],",
-						"          IPAddress = WebLog[9],",
-						"          RequestMethod = WebLog[4],",
-						"          RequestResource = WebLog[10]) ~> PickupColumnStructure",
-						"PickupColumnStructure sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     input(",
-						"          LogDate as date,",
-						"          IPAddress as string,",
-						"          RequestMethod as string,",
-						"          RequestResource as string",
-						"     ),",
-						"     deletable:false,",
-						"     insertable:true,",
-						"     updateable:false,",
-						"     upsertable:false,",
-						"     format: 'table',",
-						"     staged: true,",
-						"     allowCopyCommand: true,",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     errorHandlingOption: 'stopOnFirstError',",
-						"     mapColumn(",
-						"          LogDate,",
-						"          IPAddress,",
-						"          RequestMethod,",
-						"          RequestResource",
-						"     )) ~> WeblogStorageInSynapse"
-					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/07_dataflow_splitCondition')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "07_dataflow_SplitConditionPoolActivity",
-								"type": "DatasetReference"
-							},
-							"name": "source01ActivityPool"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "07_dataflow_SplitCondition",
-								"type": "DatasetReference"
-							},
-							"name": "sinkActivityPoolSynapse"
-						}
-					],
-					"transformations": [
-						{
-							"name": "splitResourceGroup"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          Correlationid as string,",
-						"          Operationname as string,",
-						"          Status as string,",
-						"          Eventcategory as string,",
-						"          Level as string,",
-						"          Time as date,",
-						"          Subscription as string,",
-						"          Eventinitiatedby as string,",
-						"          Resourcetype as string,",
-						"          Resourcegroup as string,",
-						"          Resource as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false) ~> source01ActivityPool",
-						"source01ActivityPool split(Resourcegroup=='app-grp',",
-						"     disjoint: false) ~> splitResourceGroup@(StreamResourceGroup, StreamWithoutCondition)",
-						"splitResourceGroup@StreamResourceGroup sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     deletable:false,",
-						"     insertable:true,",
-						"     updateable:false,",
-						"     upsertable:false,",
-						"     format: 'table',",
-						"     staged: true,",
-						"     allowCopyCommand: true,",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     errorHandlingOption: 'stopOnFirstError',",
-						"     mapColumn(",
-						"          Correlationid,",
-						"          Operationname,",
-						"          Status,",
-						"          Eventcategory,",
-						"          Level,",
-						"          Time,",
-						"          Subscription,",
-						"          Eventinitiatedby,",
-						"          Resourcetype,",
-						"          Resourcegroup,",
-						"          Resource",
-						"     )) ~> sinkActivityPoolSynapse"
-					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/08_dataflow_aggregation')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "02_dataflow_Customer",
-								"type": "DatasetReference"
-							},
-							"name": "sourceCustomer"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "09_pipeline_SelfHostedIR",
-								"type": "DatasetReference"
-							},
-							"name": "sinkAggregation"
-						}
-					],
-					"transformations": [
-						{
-							"name": "aggregateFunction"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          ProductID as integer,",
-						"          Name as string,",
-						"          ProductNumber as string,",
-						"          Color as string,",
-						"          StandardCost as decimal(19,4),",
-						"          ListPrice as decimal(19,4),",
-						"          Size as string,",
-						"          Weight as decimal(8,2),",
-						"          ProductCategoryID as integer,",
-						"          ProductModelID as integer,",
-						"          SellStartDate as timestamp,",
-						"          SellEndDate as timestamp,",
-						"          DiscontinuedDate as timestamp,",
-						"          ThumbNailPhoto as binary,",
-						"          ThumbnailPhotoFileName as string,",
-						"          rowguid as string,",
-						"          ModifiedDate as timestamp",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     isolationLevel: 'READ_UNCOMMITTED',",
-						"     format: 'table') ~> sourceCustomer",
-						"sourceCustomer aggregate(groupBy(Color),",
-						"     ListPrice = count()) ~> aggregateFunction",
-						"aggregateFunction sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     input(",
-						"          Correlationid as string,",
-						"          Operationname as string,",
-						"          Status as string,",
-						"          Eventcategory as string,",
-						"          Level as string,",
-						"          Time as string,",
-						"          Subscription as string,",
-						"          Eventinitiatedby as string,",
-						"          Resourcetype as string,",
-						"          Resourcegroup as string,",
-						"          Resource as string",
-						"     ),",
-						"     umask: 0022,",
-						"     preCommands: [],",
-						"     postCommands: [],",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> sinkAggregation"
 					]
 				}
 			},

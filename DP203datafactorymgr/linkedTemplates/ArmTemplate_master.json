@@ -211,7 +211,7 @@
 		{
 			"name": "DP203datafactorymgr_ArmTemplate_0",
 			"type": "Microsoft.Resources/deployments",
-			"apiVersion": "2018-02-01",
+			"apiVersion": "2024-03-01",
 			"properties": {
 				"mode": "incremental",
 				"templateLink": {
@@ -319,7 +319,7 @@
 		{
 			"name": "DP203datafactorymgr_ArmTemplate_1",
 			"type": "Microsoft.Resources/deployments",
-			"apiVersion": "2018-02-01",
+			"apiVersion": "2024-03-01",
 			"properties": {
 				"mode": "incremental",
 				"templateLink": {
@@ -360,7 +360,7 @@
 		{
 			"name": "DP203datafactorymgr_ArmTemplate_2",
 			"type": "Microsoft.Resources/deployments",
-			"apiVersion": "2018-02-01",
+			"apiVersion": "2024-03-01",
 			"properties": {
 				"mode": "incremental",
 				"templateLink": {
@@ -370,9 +370,6 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
-					},
-					"05_pipeline_databricks_linked_service_properties_typeProperties_existingClusterId": {
-						"value": "[parameters('05_pipeline_databricks_linked_service_properties_typeProperties_existingClusterId')]"
 					}
 				}
 			},
@@ -383,7 +380,7 @@
 		{
 			"name": "DP203datafactorymgr_ArmTemplate_3",
 			"type": "Microsoft.Resources/deployments",
-			"apiVersion": "2018-02-01",
+			"apiVersion": "2024-03-01",
 			"properties": {
 				"mode": "incremental",
 				"templateLink": {
@@ -396,6 +393,9 @@
 					},
 					"09_pipeline_Self_Hosted_ir_fileSytem_password": {
 						"value": "[parameters('09_pipeline_Self_Hosted_ir_fileSytem_password')]"
+					},
+					"05_pipeline_databricks_linked_service_properties_typeProperties_existingClusterId": {
+						"value": "[parameters('05_pipeline_databricks_linked_service_properties_typeProperties_existingClusterId')]"
 					},
 					"09_pipeline_Self_Hosted_ir_fileSytem_properties_typeProperties_host": {
 						"value": "[parameters('09_pipeline_Self_Hosted_ir_fileSytem_properties_typeProperties_host')]"
@@ -430,7 +430,7 @@
 		{
 			"name": "DP203datafactorymgr_ArmTemplate_4",
 			"type": "Microsoft.Resources/deployments",
-			"apiVersion": "2018-02-01",
+			"apiVersion": "2024-03-01",
 			"properties": {
 				"mode": "incremental",
 				"templateLink": {
