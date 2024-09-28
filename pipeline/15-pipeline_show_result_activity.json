@@ -1,0 +1,101 @@
+{
+	"name": "15-pipeline_show_result_activity",
+	"properties": {
+		"activities": [
+			{
+				"name": "LookupActivity",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlDWSource",
+						"sqlReaderStoredProcedureName": "[dbo].[GetCampanyName]",
+						"storedProcedureParameters": {
+							"customerID": {
+								"type": "Int32",
+								"value": "277"
+							}
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "02_dataflow_dimCustomer",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "LookupActivity",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "pipelineReturnValue",
+					"value": [
+						{
+							"key": "RowName",
+							"value": {
+								"type": "String",
+								"content": "Default"
+							}
+						}
+					],
+					"setSystemVariable": true
+				}
+			},
+			{
+				"name": "Set variable2",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "LookupActivity",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "ValueName",
+					"value": {
+						"value": "@activity('LookupActivity').output.firstRow.ValueName",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"variables": {
+			"RowName": {
+				"type": "Array"
+			},
+			"ValueName": {
+				"type": "String"
+			}
+		},
+		"annotations": []
+	}
+}
